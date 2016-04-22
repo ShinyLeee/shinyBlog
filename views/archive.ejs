@@ -1,0 +1,12 @@
+<%- include header.ejs %>
+
+<div id="mainContent">
+    <% posts.forEach(function(post, index) { %>
+    <div class="archive-container">
+        <span class="archive-time"><time><%= post.time.minute %></time></span>
+        <span class="archive-title"><a href="/p/<%= post._id %>"><%= post.title %></a></span>
+    </div>
+    <% }) %>
+</div>
+
+<%- include footer.ejs %>

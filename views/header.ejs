@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="description" content="ShinyLee's Personal Blog">
+    <meta name="author" content="ShinyLee">
+    <meta name="keyword" content="Cuisine ShinyLee blog cooking chinese cooking">   
+    <title>Shiny's Blog </title>
+    <link rel="icon" href="/images/icon.ico">
+    <link rel="stylesheet" href="/stylesheets/bootstrap.css">
+    <link rel="stylesheet" href="/stylesheets/bootstrap-theme.css">
+    <link rel="stylesheet" href='/stylesheets/main.css'>
+  </head>
+  <body>
+      <div class="modal fade" id="login" role="login" tabindex="-1">
+          <div class="modal-dialog">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <a type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+                      </a>
+                      <a href="#">登录</a>
+                  </div>
+                  <div class="modal-body">
+                      <form method="POST" action="/login">
+                          <div class="form-group">
+                              <input type="text" name="name" class="form-control" placeholder="请输入账号">
+                          </div>
+                          <div class="form-group">
+                              <input type="password" name="password" class="form-control" placeholder="请输入密码">
+                          </div>
+                          <div class="modal-footer">
+                              <input type="submit" name="login" class="btn btn-primary" value="登录"></input>
+                          </div>
+                      </form>
+                  </div>
+                  
+              </div>
+          </div>
+      </div>
+      <div class="modal fade" id="register" role="register" tabindex="-1">
+          <div class="modal-dialog">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <a type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+                      </a>
+                      <a href="#">注册</a>
+                  </div>
+                  <div class="modal-body">
+                      <form method="POST" action="/register">
+                          <div class="form-group">
+                              <input type="text" name="name" class="form-control" placeholder="请输入账号">
+                          </div>
+                          <div class="form-group">
+                              <input type="password" name="password" class="form-control" placeholder="请输入密码">
+                          </div>
+                           <div class="form-group">
+                              <input type="email" name="email" class="form-control" placeholder="请输入邮箱">
+                          </div>
+                          <div class="modal-footer">
+                              <input type="submit" name="login" class="btn btn-primary" value="注册"></input>
+                          </div>
+                      </form>
+                  </div>
+                  
+              </div>
+          </div>
+      </div>
+      <nav id="header" class="navbar navbar-default navbar-fixed-top" role="navigation">
+          <div class="container-fluid">
+               <div class="navbar-header">
+                  <div class="navbar-brand">
+                      <a href="/"><span>S</span>hiny's Blog</a>
+                  </div>
+                  <button type="button" class="navbar-toggle collapsed" data-toggle="collapses" data-target="#nav-room" aria-expanded="false">
+                      <span class="sr-only">Toggle navigation</span>
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                  </button>
+              </div>
+              <div class="collapse navbar-collapse" id="nav-room" >
+                  <ul class="nav navbar-nav">
+                      <li>
+                          <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#"><span class="glyphicon glyphicon-user"></span>
+                          </a>
+                          <ul class="dropdown-menu">
+                              <li><a href="#">用户管理</a></li>
+                              <li><a href="#">登出</a></li>
+                              <li><a id="hide-user" href="#" >隐藏用户栏</a></li>
+                          </ul>
+                      </li>
+                      <li><a href="/">Home</a></li>
+                      <li>
+                          <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#">Utility
+                              <span class="caret"></span>
+                              <span class="sr-only">Toggle Dropdown</span>
+                          </a>
+                          <ul class="dropdown-menu">
+                              <li><a href="http://www.color-hex.com/" target="_blank">Color-Palette</a></li>
+                              <li><a href="https://jsfiddle.net/" target="_blank">Jsfiddle</a></li>
+                              <li><a href="http://jamus.co.uk/demos/rwd-demonstrations/" target="_blank">Responsive Design</a></li>
+                              <li role="separator" class="divider"></li>
+                              <li><a href="http://www.bootcdn.cn/" target="_blank">BootCDN</a></li>
+                              <li><a href="http://nodeframework.com/" target="_blank">NodeFrameWork</a></li>
+                              
+                          </ul>
+                      </li>
+                      <li>
+                          <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#">Room
+                              <span class="caret"></span>
+                              <span class="sr-only">Toggle Dropdown</span>
+                          </a>
+                          <ul class="dropdown-menu">
+                              <li><a href="/study">Study</a></li>
+                              <li><a href="/kitchen">Kitchen</a></li>
+                              <li><a href="/living">Living</a></li>
+                              <li><a href="/yard">Yard</a></li>
+                          </ul>
+                      </li>
+                      <li><a href="#">Contact</a></li>
+                  </ul>
+                  <form action="/search" method="GET" class="search" >
+                      <input type="text" name="keyword" placeholder="Search">
+                  </form>
+              </div>
+          </div>
+      </nav>
+         
+      
+      <div class="nowPage">
+          <div class="locatePage">
+             <p><%= page %></p>
+             <span class="line"></span>
+          </div>
+          <% if (success) { %>
+          <div class="flash-condition alert alert-success"><%= success %></div>
+          <% } %>
+          <% if (error) { %>
+          <div class="flash-condition alert alert-danger"><%= error %></div>
+          <% } %>
+      </div>
+      <span id="show-users" class="glyphicon glyphicon-collapse-down"></span>
+      <div id="user">
+          
+          <span id="user-hide" class="glyphicon glyphicon-collapse-up"></span>
+          <div class="avatar">
+              <img src="/images/avatar.jpg" alt="avatar">
+          </div>
+          <div class="info">
+              <% if(!user) { %>
+              <span>ShinyLee</span>
+              <% } %>
+              <% if(user) { %>
+              <a href="/user/<%= user.name %>"><%= user.name %></a>
+              <% } %>
+              <span class="line"></span>
+              <ul class="user-icon">
+                  <li class="user-passage">
+                      <p><%= posts.length %></p>
+                      <span class="glyphicon glyphicon-file"></span>
+                  </li>
+                  <li class="user-location">
+                      <p>宁波</p>
+                      <span class="glyphicon glyphicon-map-marker"></span>
+                  </li>
+                  <li class="user-comment">
+                      <p>12</p>
+                      <span class="glyphicon glyphicon-comment"></span>
+                  </li>
+              </ul>
+          </div>
+          <ul id="nav">
+              <li><a href="/post">Post</a></li>
+              <li><a href="/archive">Archive</a></li>
+              <li><a href="/starred">Starred</a></li>
+              <li><a href="/about">About</a></li>
+          </ul>
+      </div>
+      

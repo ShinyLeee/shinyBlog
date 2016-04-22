@@ -1,0 +1,27 @@
+<%- include header.ejs %>
+
+<div id="mainContent">
+    <form id="postHolder" action="/edit/<%= post._id %>" method="POST">
+        <div class="form-group">
+            <input type="text" name="title" class="form-control postTitle" value="<%= post.title %>" placeholder="Add Your Post Title Here" disabled>
+        </div>
+        <div class="form-group">
+            <select name="room" class="form-control postRoom" disabled>
+                <option value="Study">Study</option>
+                <option value="Kitchen">Kitchen</option>
+                <option value="Living">Living</option>
+                <option value="Yard">Yard</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <textarea class="form-control postArticle" rows="12" name="post" placeholder="Add Your Post Content Here">
+                <%- post.post %>
+            </textarea>
+        </div>
+        <div>
+            <button type="submit" class="btn btn-success">Submit</button>
+            <button type="reset" class="btn btn-default">Reset</button>
+        </div>
+    </form>
+</div>
+<%- include footer.ejs %>

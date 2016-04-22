@@ -1,0 +1,342 @@
+
+/*-----------Header Module-------------------------*/
+@media (min-width: 768px) {
+    .container-fluid {
+        position: relative;
+        left: 10%;
+        padding: 0;
+        &  .search {
+            position: absolute;
+            right: 20%;
+        }
+    }
+}
+.navbar-brand a {
+    color: #222;
+    &:hover {
+        text-decoration: none;
+    }
+    & > span {
+        padding: 4px 6px;
+        background-color: #222;
+        color: #fff;
+        cursor: default;
+    }
+}
+.search {
+    display: inline-block;
+    line-height: 50px;
+    & > input {
+        width: 80px;
+        height: 30px;
+        margin: 0;
+        padding: 0;
+        line-height: 0;
+        text-align: center;
+        border: 1px solid #888;
+        border-left: 0;
+        border-right: 0;
+        background-color: transparent;
+        color: #777;  
+        &:focus {
+            outline: none;
+        }
+        
+    }
+}
+/*-----------Title Module-------------------------*/
+.nowPage {
+    position: relative;
+    height: 50px;
+}
+.flash-condition {
+    position: absolute;
+    & > span {
+        display: block;
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #fff;
+        color: #000;
+        font-family: 'Microsoft Yahei';
+        font-size: 16px;
+        border: 1px solid $borderColor;
+        border-radius: 6px;
+    }
+}
+.flash-condition {right: 10%;}
+.locatePage {
+    position: absolute;;
+    left: 40%;
+    & > p {
+        font-size: 28px;
+        margin-bottom: 5px;
+    }
+    & > .line {
+        width: 500px;
+        margin: auto;
+    }
+}
+@media (max-width: 768px) {
+    .locatePage {
+        left: 5%;
+        & > p {
+            font-size: 24px;
+        }
+        & > .line {
+            width: 200px;
+        }
+    }
+}
+@media (max-width: 768px) {  //小于768px的屏幕
+    .isLogin {
+        display: none;
+    }
+}
+/*-----------User Module-------------------------*/
+#user {
+    float: left;
+    width: 20%;
+    margin-top: 10px;
+    margin-left: 10%; 
+    background-color: #fff; 
+    border: 1px solid $borderColor;
+    border-radius: 10px;
+    & > span {
+        float: right;
+        font-size: 16px;
+        color: #222;
+        cursor: pointer;
+    }
+}
+.avatar {
+    width: 120px;
+    height: 120px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    border-radius: 50%;
+    border: 1px solid $borderColor;
+    & > img {
+        width: 100%;
+        border-radius: 50%;
+    }
+}
+.info {
+    margin-top: 20px;
+    width: 100%;
+    text-align: center;
+    font-size: 20px;
+    & > a {
+        color: #000;
+        &:hover {
+            text-decoration: none;
+        }
+    }
+    & > .line {
+        margin: auto;
+        width: 160px;
+    }
+}
+.user-icon {
+    margin: 20px 0;
+    padding: 0;
+    & > li {
+        display: inline-block;
+        width: 50px;
+        margin-right: 10p;
+    }
+    & span {
+        font-size: 20px;
+    }
+}
+#nav {
+    margin: 0;
+    padding: 0;
+    & > li {
+        width: 100%;
+        padding: 10px 20px;
+        border-top: 1px solid $borderColor;
+        text-align: center;
+        &:hover {
+            background-color: $freshBlue;
+        }
+        &:last-child:hover {
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+        & > a {
+            font-size: 18px;
+            font-weight: normal;
+            color: #000;
+            &:hover {
+                text-decoration: none;
+            }
+        }
+    }
+}
+@media (max-width: 768px) {
+    #user {
+        display: none;
+    }
+}
+/*--------------Login Module-------------------------*/
+.modal-header {
+    height: 20%;
+    padding: 30px;
+    & > a {
+        display: inline-block;
+        font-family: 'Microsoft Yahei';
+        font-size: 18px;
+        color: #787D82;
+        &:hover {
+            color: #F01400;
+        }
+    }
+}
+.modal-body {
+    display: -webkit-flex;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 60%;
+}
+.modal-footer {
+    height: 20%;
+    text-align: center;
+}
+@media (min-width: 768px) {
+    .modal-content {
+        width: 500px;
+        height: 400px;
+    }
+}
+/*-----------Content Module-------------------------*/
+#mainContent {
+    width: 90%;
+    margin: auto;
+    min-height: 500px;
+    padding-top: 50px;
+    margin-top: 10px;
+    background-color: #fff;
+    border: 1px solid $borderColor;
+    border-radius: 10px;
+}
+@media (min-width: 768px) { //大于768px的屏幕
+    #mainContent {
+        float: left;
+        width: 50%;
+        margin-left: 10%;
+    }
+}
+/*--------------Post Module-------------------------*/
+.post {
+    position: relative;
+    top: -50px;
+    width: 100%;
+    height: auto;
+    margin-bottom: 60px;
+    font-family: 'Microsoft Yahei';
+    overflow: hidden;
+}
+.post-bar {
+    position: absolute;
+    left: 0;
+    width: 6px;
+    height: 300px;
+    background-color: #f0ad4e;
+}
+.post:first-child > .post-bar {
+    border-top-left-radius: 10px;
+}
+.post-container {
+    width: 80%;
+    margin: auto;
+    & > .post-title {
+        font-size: 24px;
+        margin-bottom: 20px;
+        color: #222;
+        & a {
+            margin-top: 10px;
+            padding: 3px 12px;
+        }
+    }
+    & > .post-content {
+        font-size: 18px;
+        margin-top: 30px;
+        margin-bottom: 30px;
+        text-indent: 5px;
+    }
+    & > .post-footer {
+        width: 80%;
+        height: 50px;
+        border-top: 1px dashed #000;
+        & > .post-room {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 5px 10px;
+            color: #fff;
+        }
+        & > .post-comment {
+            display: inline-block;
+            float: right;
+            margin-top: 15px;
+        }
+    }
+}
+.post-time {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 40px;
+    height: 60px;
+    color: #fff;
+    background-color: #222;
+    text-align: center;
+}
+/*-----------Post/Edit Module-------------------------*/
+#postHolder {
+    width: 80%;
+    margin: auto;
+}
+/*--------------Archive Module-------------------------*/
+.archive-container {
+    width: 80%;
+    margin: auto;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    & a {
+        color: darkslategray;
+    }
+}
+
+
+/*-----------Footer Module-------------------------*/
+#footer {
+    margin-left: 10%;
+    margin-top: 20px;
+    color: $footerColor;
+    clear: left;
+    & > #backTop {
+        position: fixed;
+        right: 3%;
+        bottom: 5%;
+        width: 50px;
+        height: 50px;
+        background-color: #b2b2b2;
+        color: #fff;
+        font-family: "Microsoft Yahei";
+        font-size: 14px;
+        text-align: center;
+        cursor: pointer;
+        & > p {
+            margin-bottom: 5px;
+        }
+        &:hover {
+            background-color: $headColor;
+        }
+    }
+}
+@media (max-width: 768px) {
+    #footer {
+        margin-top: 5px;
+    }
+}

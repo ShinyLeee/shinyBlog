@@ -1,0 +1,36 @@
+body {
+    padding-top: 70px;
+    background-color: $backColor;
+}
+ul {
+    list-style-type: none;
+}
+.left {
+    float: left;
+}
+.right {
+    float: right;
+}
+.line {
+    display: block;
+    height: 1px;
+    background-color: $lineColor;
+}
+::-webkit-input-placeholder { 
+    color:#777;
+    line-height: 16px; 
+}
+/* firefox 19+ */
+::-moz-placeholder {
+    color:#777;
+    line-height: 16px; 
+} 
+/* ie */
+:-ms-input-placeholder {   
+     color:#777;
+     line-height: 16px; 
+} /* ie */
+input:-moz-placeholder { 
+    color:#777;
+    line-height: 16px;
+}
