@@ -29,7 +29,7 @@ app.use(session({
     key: 'shinyBlog',
     cookie: {maxAge: 1000 * 60 * 60 * 24 * 30}, //30days
     store: new MongoStore({
-        url: 'mongodb://localhost/shinyBlog'
+        url: 'mongodb://shiny:shinystar_7@ds041144.mlab.com:41144/shinyblog'
     })
 }))
 

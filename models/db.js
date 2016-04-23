@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/shinyBlog');
+mongoose.connect('mongodb://shiny:shinystar_7@ds041144.mlab.com:41144/shinyblog');
+
 
 module.exports = mongoose;
