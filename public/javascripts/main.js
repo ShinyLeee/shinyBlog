@@ -114,7 +114,7 @@ $('#user-hide, #hide-user').on('click', function() {
 })
 $('#show-user, #show-users').on('click', function() {
     $('.locatePage').css('left', '40%');
-    $('#user').animate({height: '547px', opacity: 'show'}, 800, 'linear', function() {
+    $('#user').animate({height: '481px', opacity: 'show'}, 800, 'linear', function() {
         $('#hide-user').text('隐藏用户栏').attr('id', 'hide-user');
     });
 })
