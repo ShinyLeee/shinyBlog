@@ -86,8 +86,12 @@
                           <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#"><span class="glyphicon glyphicon-user"></span>
                           </a>
                           <ul class="dropdown-menu">
-                              <li><a href="#">用户管理</a></li>
-                              <li><a href="#">登出</a></li>
+                              <li><a class="activeReg" href="#">注册</a></li>
+                              <% if(!user) { %> 
+                              <li><a class="activeLogin" href="#">登录</a></li>
+                              <% } else { %>
+                              <li><a href="/logout">登出</a></li>
+                              <% } %>
                               <li><a id="hide-user" href="#" >隐藏用户栏</a></li>
                           </ul>
                       </li>

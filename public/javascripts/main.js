@@ -106,22 +106,26 @@
     
 }(jQuery)
 
-$('#user-hide, #hide-user').on('click', function() {
-    $('#user').animate({height: 0, opacity: 'hide'}, 800, 'linear', function() {
-        $('#hide-user').text('显示用户栏').attr('id', 'show-user');
-        $('.locatePage').css('left', '10%');
-    });
-})
-$('#show-user, #show-users').on('click', function() {
-    $('.locatePage').css('left', '40%');
-    $('#user').animate({height: '481px', opacity: 'show'}, 800, 'linear', function() {
-        $('#hide-user').text('隐藏用户栏').attr('id', 'hide-user');
-    });
-})
+$(function(){
+    $('#user-hide, #hide-user').on('click', function() {
+        $('#user').animate({height: 0, opacity: 'hide'}, 800, 'linear', function() {
+            $('#hide-user').text('显示用户栏').attr('id', 'show-user');
+            $('.locatePage').css('left', '10%');
+        });
+    })
+    
+    $('#show-user, #show-users').on('click', function() {
+        $('.locatePage').css('left', '40%');
+        $('#user').animate({height: '481px', opacity: 'show'}, 800, 'linear', function() {
+            $('#hide-user').text('隐藏用户栏').attr('id', 'hide-user');
+        });
+    })
 
-$('.activeLogin').click(function () {
-    $('#login').modal();
-})
-$('.activeReg').click(function () {
-    $('#register').modal();
-})
+    $('.activeLogin').click(function () {
+        $('#login').modal();
+    })
+    $('.activeReg').click(function () {
+        $('#register').modal();
+    })
+    
+});
