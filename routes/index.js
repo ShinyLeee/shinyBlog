@@ -3,8 +3,8 @@ var router = express.Router();
 var crypto = require('crypto');
 var User = require('../models/user');
 var Post = require('../models/post');
+var app = require('../app.js');
 var cool = require('cool-ascii-faces');
-
 /* GET home page. */
 router.get('/', function(req, res, next) {
     Post.getDefault(null, null, function(err, posts) {

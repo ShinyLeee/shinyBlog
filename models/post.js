@@ -1,4 +1,4 @@
-var mongoose = require('./db');
+var mongoose = require('./db.js');
 var markdown = require('markdown').markdown;
 var ObjectID = require('mongodb').ObjectID;
 
@@ -13,7 +13,6 @@ var postSchema = new mongoose.Schema({
 }, {
     collection: 'posts' 
 });
-
 //由schema生成的数据库模型
 var postModel = mongoose.model('Post', postSchema);
 
@@ -23,7 +22,6 @@ function Post(post) {
     this.post = post.post,
     this.room = post.room
 }
-
 module.exports = Post;
 
 //保存文章

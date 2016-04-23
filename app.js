@@ -9,18 +9,26 @@ var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 var flash = require('connect-flash');
 var multer = require('multer');
-
-
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
+
+var url;
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 app.use(flash());
+
+if (process.env.NODE_ENV === "production") {
+  url = 'mongodb://shiny:shinystar_7@ds041144.mlab.com:41144/shinyblog';
+}
+else {
+  url = 'mongodb://localhost/shinyBlog';
+}
+
 //添加session会话支持
 app.use(session({
     resave: true,
@@ -29,7 +37,8 @@ app.use(session({
     key: 'shinyBlog',
     cookie: {maxAge: 1000 * 60 * 60 * 24 * 30}, //30days
     store: new MongoStore({
-        url: 'mongodb://shiny:shinystar_7@ds041144.mlab.com:41144/shinyblog'
+        url: url
+        //url: 'mongodb://shiny:shinystar_7@ds041144.mlab.com:41144/shinyblog'
     })
 }))
 
@@ -46,6 +55,7 @@ app.use('/users', users);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
+  
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
@@ -57,9 +67,17 @@ app.use(function(req, res, next) {
 // will print stacktrace
 if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
-    var db = require('./model/db');
-    db();
-    console.log('DEV');
+    res.status(err.status || 500);
+    res.render('error', {
+      message: err.message,
+      error: err
+    });
+  });
+}
+
+if (app.get('env') === 'production') {
+  console.log('ss')
+  app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.render('error', {
       message: err.message,
@@ -71,9 +89,7 @@ if (app.get('env') === 'development') {
 // production error handler
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
-  var db = require('./model/db');
-  db();
-  console.log('PRO');
+  console.log('ss');
   res.status(err.status || 500);
   res.render('error', {
     message: err.message,
