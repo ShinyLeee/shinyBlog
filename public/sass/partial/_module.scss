@@ -238,6 +238,10 @@
     font-family: 'Microsoft Yahei';
     overflow: hidden;
 }
+.comment {
+    width: 80%;
+    margin: auto;
+}
 .post-bar {
     position: absolute;
     left: 0;
@@ -280,6 +284,7 @@
             display: inline-block;
             float: right;
             margin-top: 15px;
+            color: #222;
         }
     }
 }
@@ -327,6 +332,7 @@
         font-size: 14px;
         text-align: center;
         cursor: pointer;
+        transition: background-color, .4s, ease-in;
         & > p {
             margin-bottom: 5px;
         }

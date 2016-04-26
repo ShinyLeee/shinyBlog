@@ -3,8 +3,8 @@ var router = express.Router();
 var crypto = require('crypto');
 var User = require('../models/user');
 var Post = require('../models/post');
-var app = require('../app.js');
-var cool = require('cool-ascii-faces');
+
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
     Post.getDefault(null, null, function(err, posts) {
@@ -22,6 +22,7 @@ router.get('/', function(req, res, next) {
 });
 
 /*-------------登录登出模块---------------*/
+router.get('/logout', isLogin);
 router.get('/logout', function(req, res) {
     req.session.user = null;
     req.flash('success', '登出成功');
@@ -52,6 +53,17 @@ router.post('/login', function(req, res) {
 })
 
 /*-------------注册模块---------------*/
+router.get('/hasAccount', function(req, res) {
+    //AJAX检测用户是否存在
+    var account = req.query.name;
+    User.get(account, function(err, user) {
+        if(err) {
+            req.flash('error', err);
+            return res.redirect('/');
+        }
+        res.send(!user);
+    })
+})
 router.post('/register', function(req, res) {
     var md5 = crypto.createHash('md5');
     var password = md5.update(req.body.password).digest('hex');
@@ -86,18 +98,15 @@ router.post('/register', function(req, res) {
 /*-------------发表文章模块---------------*/
 router.get('/post', isLogin);
 router.get('/post', function(req, res) {
-    var currenUser = req.session.user;
-    Post.getStatus(currenUser.name, function(err, posts) {
-        res.render('post', {
-            page: "Post",
-            posts: posts,
-            user: req.session.user,
-            error: req.flash('error').toString(),
-            success: req.flash('success').toString()
-        });
+    res.render('post', {
+        page: "Post",
+        user: req.session.user,
+        error: req.flash('error').toString(),
+        success: req.flash('success').toString()
     });
 });
 
+router.post('/post', isLogin);
 router.post('/post', function(req, res) {
     var currenUser = req.session.user;
     var post = {
@@ -109,7 +118,6 @@ router.post('/post', function(req, res) {
     var newPost = new Post(post);
     newPost.save(function(err) {
         if(err) {
-            console.log(err);
             req.flash('error', err);
             return res.redirect('/');
         }
@@ -132,10 +140,9 @@ router.get('/edit/:_id', function(req, res) {
     });
 });
 
+router.post('/edit/:_id', isLogin);
 router.post('/edit/:_id', function(req, res) {
     var _id = req.params._id;
-    var post = req.body.post;
-    console.log(_id);
     Post.update(_id, req.body.post, function(err) {
         if(err) {
             req.flash('error', err);
@@ -160,13 +167,7 @@ router.get('/delete/:_id', function(req, res) {
 });
 /*-------------获取单篇/用户全部文章模块---------------*/
 router.get('/p/:_id', function(req, res) {
-    var currentUser = req.session.user;
-    if(!currentUser) { 
-        currentUser = {
-            name: 'ShinyLee'
-        }
-     }
-    Post.getOne(req.params._id, currentUser.name, function(err, post, posts) {
+    Post.getOne(req.params._id, function(err, post, posts) {
         if(err) {
             post = null;
             req.flash('error', '获取文章失败');
@@ -175,7 +176,6 @@ router.get('/p/:_id', function(req, res) {
             page: 'Article',
             user: req.session.user,
             post: post,
-            posts: posts,
             error: req.flash('error').toString(),
             success: req.flash('success').toString()
         })
@@ -264,8 +264,7 @@ router.get('/yard', function(req, res) {
 });
 /*-------------Search文章模块---------------*/
 router.get('/search', function(req, res) {
-    var currentUser = req.session.user;
-    Post.search(req.query.keyword, currentUser.name, function(err, post, posts) {
+    Post.search(req.query.keyword, function(err, post, posts) {
         if(err) {
             req.flash('error', err);
             return res.redirect('/');
@@ -285,9 +284,6 @@ router.get('/search', function(req, res) {
     });
 });
 
-router.get('/cool', function(req, res) {
-  res.send(cool());
-});
 /*-------------Archive文章模块---------------*/
 router.get('/archive', function(req, res) {
     Post.getArchive(function(err, posts) {
@@ -306,15 +302,11 @@ router.get('/archive', function(req, res) {
 });
 /*-------------About文章模块---------------*/
 router.get('/about', function(req, res) {
-    var currenUser = req.session.user;
-    Post.getStatus(currenUser.name, function(err, posts) {
-        res.render('about', {
-            page: "About",
-            posts: posts,
-            user: req.session.user,
-            error: req.flash('error').toString(),
-            success: req.flash('success').toString()
-        });
+    res.render('about', {
+        page: "About Me",
+        user: req.session.user,
+        error: req.flash('error').toString(),
+        success: req.flash('success').toString()
     });
 });
 

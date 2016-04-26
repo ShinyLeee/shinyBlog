@@ -44,6 +44,11 @@ input:-moz-placeholder {
   line-height: 16px;
 }
 
+::selection {
+  color: #fff;
+  background-color: #222;
+}
+
 /*-----------Header Module-------------------------*/
 @media (min-width: 768px) {
   .container-fluid {
@@ -300,6 +305,11 @@ input:-moz-placeholder {
   overflow: hidden;
 }
 
+.comment {
+  width: 80%;
+  margin: auto;
+}
+
 .post-bar {
   position: absolute;
   left: 0;
@@ -346,6 +356,7 @@ input:-moz-placeholder {
   display: inline-block;
   float: right;
   margin-top: 15px;
+  color: #222;
 }
 
 .post-time {
@@ -394,6 +405,7 @@ input:-moz-placeholder {
   font-size: 14px;
   text-align: center;
   cursor: pointer;
+  transition: background-color, .4s, ease-in;
 }
 #footer > #backTop > p {
   margin-bottom: 5px;

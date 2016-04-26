@@ -1,4 +1,81 @@
 
+
+
+$(function(){
+    $('.activeLogin').click(function () {
+        $('#login').modal();
+        return false;
+    })
+    
+    $('.activeReg').click(function () {
+        $('#register').modal();
+        return false;
+    })
+    
+    //用于同个jQuery对象的不同事件操作
+    $('body').on({
+        click: function() {
+            var speed = document.body.scrollTop > 400 ? 800 : 1200;
+            $('body').animate({scrollTop: 0}, speed);
+            return false;
+        }
+    }, '#backTop');
+    
+
+    $('#reg-account').on('blur', function() { 
+        var account = 'name='+this.value+'';
+        var $target = $('#reg-account').tooltip();
+        console.log($target);
+        $.ajax({
+            type: 'GET',
+            url: '/hasAccount',
+            data: account,
+            success: function(isEmpty, textStatus) {
+                if($target.val().length < 6) {
+                    $target
+                    .attr('data-original-title', '用户名需大于6位')
+                    .trigger('mouseover');
+                }
+                else {  
+                    if(isEmpty) {
+                        $target
+                        .attr('data-original-title', '该用户名可使用')
+                        .trigger('mouseover');
+                    }
+                    else {
+                        $target
+                        .attr('data-original-title', '该用户名已存在')
+                        .trigger('mouseover');
+                   }
+                }
+            }
+        })
+    })
+    
+    $('#log-account').on('blur', function() {
+        var account = 'name='+this.value+'';
+        var $target = $('#log-account').tooltip();
+        $.ajax({
+            type: 'GET',
+            url: '/hasAccount',
+            data: account,
+            success: function(isEmpty, textStatus) {
+                if(isEmpty) {
+                    $target
+                    .attr('data-original-title', '该用户不存在')
+                    .trigger('mouseover');
+                }
+                else {
+                    $target
+                    .attr('data-original-title', '该用户可登录')
+                    .trigger('mouseover');
+                }
+            }
+        })
+    })
+})
+
+//Learn Collapse Plugin From Bootstrap
 !function($) {
     var collapse = function(target, option) {
         this.$target = $(target);
@@ -105,27 +182,3 @@
     })
     
 }(jQuery)
-
-$(function(){
-    $('#user-hide, #hide-user').on('click', function() {
-        $('#user').animate({height: 0, opacity: 'hide'}, 800, 'linear', function() {
-            $('#hide-user').text('显示用户栏').attr('id', 'show-user');
-            $('.locatePage').css('left', '10%');
-        });
-    })
-    
-    $('#show-user, #show-users').on('click', function() {
-        $('.locatePage').css('left', '40%');
-        $('#user').animate({height: '481px', opacity: 'show'}, 800, 'linear', function() {
-            $('#hide-user').text('隐藏用户栏').attr('id', 'hide-user');
-        });
-    })
-
-    $('.activeLogin').click(function () {
-        $('#login').modal();
-    })
-    $('.activeReg').click(function () {
-        $('#register').modal();
-    })
-    
-});

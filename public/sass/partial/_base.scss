@@ -34,3 +34,7 @@ input:-moz-placeholder {
     color:#777;
     line-height: 16px;
 }
+::selection {
+    color: #fff;
+    background-color: #222;
+}

@@ -71,27 +71,15 @@ Post.prototype.save = function(callback) {
 };
 
 //获取单篇文章
-Post.getOne = function(_id, name, callback) {
+Post.getOne = function(_id, callback) {
     postModel.findOne({
         _id: new ObjectID(_id)
     }, function(err, doc) {
         if(err) {
             return callback(err.toString());
         }
-        if(name) {
-            postModel.find({
-                name: name
-            }).exec(function(err, docs) {
-                if(err) {
-                    return callback(err.toString());
-                }
-                callback(null , doc, docs);
-            });
-        }
-        if(!name) {
-            doc.post = markdown.toHTML(doc.post);
-            callback(null, doc);
-        } 
+        doc.post = markdown.toHTML(doc.post);
+        callback(null, doc);
     });
 };
 
@@ -112,18 +100,6 @@ Post.getDefault = function(name, room, callback) {
         }
         callback(null, docs);
     });      
-};
-
-//获取文章数量
-Post.getStatus = function(name, callback) {
-    postModel.find({
-        name: name
-    }).exec(function(err, docs) {
-        if(err) {
-            return callback(err.toString());
-        }
-        callback(null, docs);
-    });
 };
 
 //存档
@@ -158,7 +134,7 @@ Post.update = function(_id, post, callback) {
         _id: new ObjectID(_id)
     }, {
         $set: {post: post}
-    }, function(err) {
+    }, function(err, doc) {
         if(err) {
             return callback(err.toString());
         }
@@ -179,25 +155,13 @@ Post.remove = function(_id, callback) {
 };
 
 //查找文章
-Post.search = function(title, name, callback) {
+Post.search = function(title, callback) {
     postModel.findOne({
         title: title
     }, function(err, doc) {
         if(err) {
             return callback(err.toString());
         } 
-        if(name) {
-            postModel.find({
-                name: name
-            }, function(err, docs) {
-                if(err) {
-                    return callback(err.toString());
-                }
-                callback(null, doc, docs);
-            })
-        }
-        if(!name) {
-            callback(null, doc);
-        }
+        callback(null, doc);
     });
 };

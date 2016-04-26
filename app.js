@@ -22,7 +22,7 @@ app.set('view engine', 'ejs');
 
 app.use(flash());
 
-if (process.env.NODE_ENV === "production") {
+if (app.get('env') === "production") {
   url = 'mongodb://shiny:shinystar_7@ds041144.mlab.com:41144/shinyblog';
 }
 else {
@@ -62,7 +62,6 @@ app.use(function(req, res, next) {
 });
 
 // error handlers
-
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
@@ -76,7 +75,6 @@ if (app.get('env') === 'development') {
 }
 
 if (app.get('env') === 'production') {
-  console.log('ss')
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.render('error', {
