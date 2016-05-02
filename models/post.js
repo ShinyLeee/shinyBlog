@@ -70,6 +70,13 @@ Post.prototype.save = function(callback) {
     });
 };
 
+Post.preview = function(article, callback) {
+    if(article) {
+        article = markdown.toHTML(article);
+        callback(null, article);
+    }
+}
+
 //获取单篇文章
 Post.getOne = function(_id, callback) {
     postModel.findOne({
@@ -98,6 +105,9 @@ Post.getDefault = function(name, room, callback) {
         if(err) {
             return callback(err.toString());
         }
+        docs.forEach(function(doc, index) {
+            doc.post = markdown.toHTML(doc.post);
+        })
         callback(null, docs);
     });      
 };
@@ -162,6 +172,7 @@ Post.search = function(title, callback) {
         if(err) {
             return callback(err.toString());
         } 
+        doc.post = markdown.toHTML(doc.post);
         callback(null, doc);
     });
 };

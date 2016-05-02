@@ -155,6 +155,26 @@ fieldset[disabled] .btn-primary.active {
   background-color: #265a88;
   background-image: none;
 }
+.btn-fresh {
+  background-image: -webkit-linear-gradient(top, #4c847b 0%, #196155 100%);
+  background-image: -o-linear-gradient(top, #4c847b 0%, #196155 100%);
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#4c847b), to(#196155));
+  background-image: linear-gradient(to bottom, #4c847b 0%, #196155 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff337ab7', endColorstr='#ff265a88', GradientType=0);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+  background-repeat: repeat-x;
+  border-color: #196155;
+}
+.btn-fresh:hover,
+.btn-fresh:focus {
+  background-color: #196155;
+  background-position: 0 -15px;
+}
+.btn-fresh:active,
+.btn-fresh.active {
+  background-color: #196155;
+  border-color: #4c847b;
+}
 .btn-success {
   background-image: -webkit-linear-gradient(top, #5cb85c 0%, #419641 100%);
   background-image: -o-linear-gradient(top, #5cb85c 0%, #419641 100%);

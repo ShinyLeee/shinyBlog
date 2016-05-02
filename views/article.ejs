@@ -1,21 +1,32 @@
 <%- include header.ejs %>
           
-<div id="mainContent">
+<div id="main-content">
      <div class="post">
         <div class="post-bar"></div>
         <div class="post-container">
             <div class="post-title">
-                <h2><%= post.title %></h2>
-                <% if(user) { %>
-                <a class="btn btn-default"><i class="glyphicon glyphicon-star"></i>&nbsp;Star</a>
-                <a class="btn btn-default" href="/edit/<%= post._id %>/"><i class="glyphicon glyphicon-pencil"></i>&nbsp;Edit</a>
-                <a class="btn btn-default" href="/delete/<%= post._id %>"><i class="glyphicon glyphicon-trash"></i>&nbsp;Delete</a>
-                <% } %>
+                <h2>
+                    <%= post.title %>
+                    <% if(user) { %>
+                    <a data-toggle="tooltip" title="收藏"><i class="glyphicon glyphicon-star"></i></a>
+                    <a href="/edit/<%= post._id %>/" data-toggle="tooltip" title="编辑"><i class="glyphicon glyphicon-pencil"></i></a>
+                    <a href="/delete/<%= post._id %>" data-toggle="tooltip" title="删除"><i class="glyphicon glyphicon-trash"></i></a>
+                    <% } %>
+                </h2>
+
             </div>
             <div class="post-content"><%- post.post %></div>
             <div class="post-footer">
-                <a href="/Study" class="post-room btn btn-primary"><%= post.room %></a>
-                <a class="post-comment">comment</a>
+                <% if (post.room === 'Study') { %> 
+                <a href="/<%= post.room %>" class="post-room btn btn-primary"><%= post.room %></a>
+                <% } else if (post.room === 'Kitchen'){ %>
+                <a href="/<%= post.room %>" class="post-room btn btn-fresh"><%= post.room %></a>
+                <% } else if (post.room === 'Living') { %>
+                <a href="/<%= post.room %>" class="post-room btn btn-info"><%= post.room %></a>
+                <% } else if (post.room === 'Yard') { %>
+                <a href="/<%= post.room %>" class="post-room btn btn-success"><%= post.room %></a>
+                <% } %>
+
             </div>              
         </div>
         <div class="post-time">

@@ -1,6 +1,6 @@
 <%- include header.ejs %>
 
-<div id="mainContent">
+<div id="main-content">
     <% posts.forEach(function(post, index) { %>
     <div class="post">
         <div class="post-bar"></div>
@@ -8,8 +8,15 @@
             <a href="/p/<%= post._id %>" class="post-title"><h2><%= post.title %></h2></a>
             <div class="post-content"><%- post.post %></div>
             <div class="post-footer">
-                <a href="/<%= post.room %>" class="btn btn-primary post-room"><%= post.room %></a>
-                <span class="post-comment">0 comment</span>
+                <% if (post.room === 'Study') { %> 
+                <a href="/<%= post.room %>" class="post-room btn btn-primary"><%= post.room %></a>
+                <% } else if (post.room === 'Kitchen'){ %>
+                <a href="/<%= post.room %>" class="post-room btn btn-fresh"><%= post.room %></a>
+                <% } else if (post.room === 'Living') { %>
+                <a href="/<%= post.room %>" class="post-room btn btn-info"><%= post.room %></a>
+                <% } else if (post.room === 'Yard') { %>
+                <a href="/<%= post.room %>" class="post-room btn btn-success"><%= post.room %></a>
+                <% } %>
             </div>
         </div>
         <div class="post-time">

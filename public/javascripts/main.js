@@ -2,12 +2,73 @@
 
 
 $(function(){
-    $('.activeLogin').click(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+    
+    //获取当前文章数量
+    $(window).on('load', function() {
+        var user = $('#user').find('.info').children('a').text();
+        var name = 'name='+user;
+        $.ajax({
+            type: 'GET',
+            url: '/getPostLength',
+            data: name,
+            success: function(passageLength) {
+                $('.user-passage').children('p').text(passageLength);
+            },
+            error: function(XML, textStatus, err) {
+                console.log(XML + textStatus + err);
+            }
+        })
+    })
+    
+    $(window).on('scroll', function() {
+        var scrollTop = document.body.scrollTop;
+        if (scrollTop > 400) {
+            $('#back-top').fadeIn();
+        }
+        else {
+            $('#back-top').fadeOut();
+        }
+    })
+    
+    //预览文章修改
+    $('#edit-preview, #post-preview').on('click', function() {
+        var article = $('#edit').val();
+        $.ajax({
+            type: 'GET',
+            url: '/preview',
+            data: {article: article},
+            success: function(article) {
+                $('#preview').html(article);
+            },
+            error: function(XML, textStatus, err) {
+                console.log(XML + textStatus + err);
+            }
+        })
+    })
+    
+    //上传图片模块
+    $('#upload-img').on('click', function() {
+        $('#choose-img').trigger('click'); 
+    })
+    
+    $('#choose-img').on('change', function() {
+        $('#submit-img').trigger('click'); 
+    })
+    
+    $('#frameFile').on('load', function() {
+        var path = $(this).contents().find('body').text().slice(6);
+        var markdownPath = '\n![markdown]('+ path +')';
+        $('#edit').append(markdownPath);
+    })
+    
+    //启用模态框
+    $('.active-login').click(function () {
         $('#login').modal();
         return false;
     })
     
-    $('.activeReg').click(function () {
+    $('.active-reg').click(function () {
         $('#register').modal();
         return false;
     })
@@ -19,13 +80,12 @@ $(function(){
             $('body').animate({scrollTop: 0}, speed);
             return false;
         }
-    }, '#backTop');
+    }, '#back-top');
     
 
     $('#reg-account').on('blur', function() { 
         var account = 'name='+this.value+'';
-        var $target = $('#reg-account').tooltip();
-        console.log($target);
+        var $target = $('#reg-account');
         $.ajax({
             type: 'GET',
             url: '/hasAccount',
@@ -48,7 +108,10 @@ $(function(){
                         .trigger('mouseover');
                    }
                 }
-            }
+             },
+             error: function(XML, textStatus, error) {
+                 console.log(XML + textStatus + error);
+             }
         })
     })
     

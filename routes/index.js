@@ -1,9 +1,28 @@
 var express = require('express');
 var router = express.Router();
 var crypto = require('crypto');
+var multer = require('multer');
 var User = require('../models/user');
 var Post = require('../models/post');
 
+//添加multer上传文件模块
+var storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, './public/images/upload');
+  },
+  filename: function(req , file, cb) {
+    cb(null, Date.now() + '-' + file.originalname);
+  }
+});
+
+var upload = multer({
+  storage: storage
+});
+
+/*-------------上传模块---------------*/
+router.post('/upload', upload.single('img'), function(req, res) {
+    res.send(req.file.path);
+})
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -21,6 +40,51 @@ router.get('/', function(req, res, next) {
     });
 });
 
+/*-------------AJAX模块---------------*/
+
+//AJAX检测用户是否存在
+router.get('/hasAccount', function(req, res) {
+    var account = req.query.name;
+    
+    User.get(account, function(err, user) {
+        if(err) {
+            req.flash('error', err);
+            return res.redirect('/');
+        }
+        res.send(!user);
+    })
+})
+
+//AJAX检测当前文章数量
+router.get('/getPostLength', function(req, res) {
+    var name = req.query.name;
+    
+    Post.getDefault(name, null, function(err, posts) {
+        var length = String(posts.length);
+        if(err) {
+            console.log(err);
+            return;
+        }
+        //res.send(paramter) 
+        //--> parameter Only can be [Object] [Array] [String] or [Buffer Object]
+        //Not [Number]
+        res.send(length);
+    })
+})
+
+//AJAX获取实时预览文章
+router.get('/preview', function(req, res) {
+    var article = req.query.article;
+    
+    Post.preview(article, function(err, article) {
+        if(err) {
+            console.log(err);
+            return;
+        }
+        res.send(article);
+    })
+})
+
 /*-------------登录登出模块---------------*/
 router.get('/logout', isLogin);
 router.get('/logout', function(req, res) {
@@ -32,6 +96,7 @@ router.get('/logout', function(req, res) {
 router.post('/login', function(req, res) {
     var md5 = crypto.createHash('md5');
     var password = md5.update(req.body.password).digest('hex');
+    
     User.get(req.body.name, function(err, user) {
         if(err) {
             req.flash('error', err);
@@ -52,18 +117,9 @@ router.post('/login', function(req, res) {
     })
 })
 
+
 /*-------------注册模块---------------*/
-router.get('/hasAccount', function(req, res) {
-    //AJAX检测用户是否存在
-    var account = req.query.name;
-    User.get(account, function(err, user) {
-        if(err) {
-            req.flash('error', err);
-            return res.redirect('/');
-        }
-        res.send(!user);
-    })
-})
+
 router.post('/register', function(req, res) {
     var md5 = crypto.createHash('md5');
     var password = md5.update(req.body.password).digest('hex');
@@ -167,7 +223,7 @@ router.get('/delete/:_id', function(req, res) {
 });
 /*-------------获取单篇/用户全部文章模块---------------*/
 router.get('/p/:_id', function(req, res) {
-    Post.getOne(req.params._id, function(err, post, posts) {
+    Post.getOne(req.params._id, function(err, post) {
         if(err) {
             post = null;
             req.flash('error', '获取文章失败');
