@@ -26,6 +26,24 @@
         </div>
     </div>
     <% }) %>
+    <nav id="pager">
+        <ul class="pager">
+            <% if (isFirstPage && isLastPage) { %> 
+            <li class="previous disabled"><a><span aria-hidden="true">&larr;</span> 上一页</a></li>
+            <li class="next disabled"><a>下一页 <span aria-hidden="true">&rarr;</span></a></li>
+            <% } else if (isFirstPage) { %>
+            <li class="previous disabled"><a><span aria-hidden="true">&larr;</span> 上一页</a></li>
+            <li class="next"><a href="/?p=<%= pages + 1 %>">下一页 <span aria-hidden="true">&rarr;</span></a></li>
+            <% } else if (isLastPage) { %>
+            <li class="previous"><a href="/?p=<%= pages - 1 %>"><span aria-hidden="true">&larr;</span> 上一页</a></li>
+            <li class="next disabled"><a>下一页 <span aria-hidden="true">&rarr;</span></a></li>
+            <% } else { %>
+            <li class="previous"><a href="/?p=<%= pages - 1 %>"><span aria-hidden="true">&larr;</span> 上一页</a></li>
+            <li class="next"><a href="/?p=<%= pages + 1 %>">下一页 <span aria-hidden="true">&rarr;</span></a></li>
+            <% } %>
+            
+        </ul>
+    </nav>
 </div>
 
 <%- include footer.ejs %>

@@ -4,6 +4,7 @@ var crypto = require('crypto');
 var multer = require('multer');
 var User = require('../models/user');
 var Post = require('../models/post');
+var Admin = require('../models/admin');
 
 //添加multer上传文件模块
 var storage = multer.diskStorage({
@@ -26,7 +27,8 @@ router.post('/upload', upload.single('img'), function(req, res) {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    Post.getDefault(null, null, function(err, posts) {
+    var page = parseInt(req.query.p) || 1;
+    Post.getDefault(page, null, function(err, posts, total) {
         if(err) {
             posts = [];
         }
@@ -34,56 +36,14 @@ router.get('/', function(req, res, next) {
             page: 'Home',
             user: req.session.user,
             posts: posts,
+            pages: page,
+            isFirstPage: (page - 1) == 0,
+            isLastPage: (page - 1) * 5 + posts.length == total,
             error: req.flash('error').toString(),
             success: req.flash('success').toString()
         });
     });
 });
-
-/*-------------AJAX模块---------------*/
-
-//AJAX检测用户是否存在
-router.get('/hasAccount', function(req, res) {
-    var account = req.query.name;
-    
-    User.get(account, function(err, user) {
-        if(err) {
-            req.flash('error', err);
-            return res.redirect('/');
-        }
-        res.send(!user);
-    })
-})
-
-//AJAX检测当前文章数量
-router.get('/getPostLength', function(req, res) {
-    var name = req.query.name;
-    
-    Post.getDefault(name, null, function(err, posts) {
-        var length = String(posts.length);
-        if(err) {
-            console.log(err);
-            return;
-        }
-        //res.send(paramter) 
-        //--> parameter Only can be [Object] [Array] [String] or [Buffer Object]
-        //Not [Number]
-        res.send(length);
-    })
-})
-
-//AJAX获取实时预览文章
-router.get('/preview', function(req, res) {
-    var article = req.query.article;
-    
-    Post.preview(article, function(err, article) {
-        if(err) {
-            console.log(err);
-            return;
-        }
-        res.send(article);
-    })
-})
 
 /*-------------登录登出模块---------------*/
 router.get('/logout', isLogin);
@@ -231,6 +191,7 @@ router.get('/p/:_id', function(req, res) {
         res.render('article', {
             page: 'Article',
             user: req.session.user,
+            star: req.session.star,
             post: post,
             error: req.flash('error').toString(),
             success: req.flash('success').toString()
@@ -238,89 +199,18 @@ router.get('/p/:_id', function(req, res) {
     });
 });
 
-router.get('/user/:username', function(req, res) {
-    var currenUser = req.session.user;
-    Post.getDefault(req.params.username, null, function(err, posts) {
-        if(err) {
-            posts = [];
-        }
-        res.render('index', {
-            page: currenUser.name,
-            user: req.session.user,
-            posts: posts,
-            error: req.flash('error').toString(),
-            success: req.flash('success').toString()
-        });
-    });
-});
-
 /*-------------ROOM文章模块---------------*/
-router.get('/study', function(req, res) {
-    Post.getDefault(null, 'Study', function(err, posts) {
-        if(err) {
-            req.flash('error', err);
-            return res.redirect('/');
-        }
-        res.render('index', {
-            page: "Study",
-            posts: posts,
-            user: req.session.user,
-            error: req.flash('error').toString(),
-            success: req.flash('success').toString()
-        });
-    });
-});
+router.get('/study', getRoom);
 
-router.get('/kitchen', function(req, res) {
-    Post.getDefault(null, 'Kitchen', function(err, posts) {
-        if(err) {
-            req.flash('error', err);
-            return res.redirect('/');
-        }
-        res.render('index', {
-            page: "Kitchen",
-            posts: posts,
-            user: req.session.user,
-            error: req.flash('error').toString(),
-            success: req.flash('success').toString()
-        });
-    });
-});
+router.get('/kitchen', getRoom);
 
-router.get('/living', function(req, res) {
-    Post.getDefault(null, 'Living', function(err, posts) {
-        if(err) {
-            req.flash('error', err);
-            return res.redirect('/');
-        }
-        res.render('index', {
-            page: "Living",
-            posts: posts,
-            user: req.session.user,
-            error: req.flash('error').toString(),
-            success: req.flash('success').toString()
-        });
-    });
-});
+router.get('/living', getRoom);
 
-router.get('/yard', function(req, res) {
-    Post.getDefault(null, 'Yard', function(err, posts) {
-        if(err) {
-            req.flash('error', err);
-            return res.redirect('/');
-        }
-        res.render('index', {
-            page: "Yard",
-            posts: posts,
-            user: req.session.user,
-            error: req.flash('error').toString(),
-            success: req.flash('success').toString()
-        });
-    });
-});
+router.get('/yard', getRoom);
+
 /*-------------Search文章模块---------------*/
 router.get('/search', function(req, res) {
-    Post.search(req.query.keyword, function(err, post, posts) {
+    Post.search(req.query.keyword, function(err, post) {
         if(err) {
             req.flash('error', err);
             return res.redirect('/');
@@ -332,7 +222,6 @@ router.get('/search', function(req, res) {
         res.render('article', {
             page: "Search",
             post: post,
-            posts: posts,
             user: req.session.user,
             error: req.flash('error').toString(),
             success: req.flash('success').toString()
@@ -356,6 +245,24 @@ router.get('/archive', function(req, res) {
         });
     });
 });
+/*-------------Star文章模块---------------*/
+router.get('/star', function(req, res) {
+    Post.getStarred(function(err, posts) {
+        if(err) {
+            req.flash('error', err);
+            return res.redirect('/');
+        }
+        res.render('star', {
+            page: "Starred",
+            posts: posts,
+            star: req.session.star,
+            user: req.session.user,
+            error: req.flash('error').toString(),
+            success: req.flash('success').toString()
+        });
+    });
+});
+
 /*-------------About文章模块---------------*/
 router.get('/about', function(req, res) {
     res.render('about', {
@@ -368,10 +275,99 @@ router.get('/about', function(req, res) {
 
 module.exports = router;
 
+
+/*-------------AJAX模块---------------*/
+
+//AJAX检测用户是否存在
+router.get('/hasAccount', function(req, res) {
+    var account = req.query.name;
+    
+    User.get(account, function(err, user) {
+        if(err) {
+            req.flash('error', err);
+            return res.redirect('/');
+        }
+        res.send(!user);
+    })
+})
+
+//AJAX检测当前文章数量
+router.get('/getPostLength', function(req, res) {
+    var name = req.query.name;
+    
+    Post.getAll(name, function(err, posts) {
+        var length = String(posts.length);
+        if(err) {
+            console.log(err);
+            return;
+        }
+        //res.send(paramter) 
+        //--> parameter Only can be [Object] [Array] [String] or [Buffer Object]
+        //Not [Number]
+        res.send(length);
+    })
+})
+
+//AJAX获取实时预览文章
+router.get('/preview', function(req, res) {
+    var article = req.query.article;
+    
+    Post.preview(article, function(err, article) {
+        if(err) {
+            console.log(err);
+            return;
+        }
+        res.send(article);
+    })
+})
+
+//Ajax添加收藏文章
+router.get('/makeStar', function(req, res) {
+    var postID = req.query.postID;
+    
+    Post.makeStar(postID, function(err) {
+        if(err) {
+            res.send('Database Connect Error, Please try again later');
+            return;
+        }
+        res.send('收藏成功');
+    })
+})
+
+//Ajax点赞网站
+router.get('/giveLike', function(req, res) {
+    var ip = req.ip;
+   // Admin.saveLike()
+})
+
+
 function isLogin (req, res, next) {
     if(!req.session.user) {
         req.flash('error', '您尚未登录');
         return res.redirect('/');
     }
     next();
+}
+
+function getRoom (req, res) {
+    //首字母大写
+    var path = req.path.slice(1).replace(/(\w)/,function(v){return v.toUpperCase()});
+    var page = req.query.p || 1;
+    
+    Post.getDefault(page, path, function(err, posts, total) {
+        if(err) {
+            req.flash('error', err);
+            return res.redirect('/');
+        }
+        res.render('index', {
+            page: path,
+            posts: posts,
+            pages: page,
+            isFirstPage: (page - 1) == 0,
+            isLastPage: (page - 1) * 5 + posts.length == total,
+            user: req.session.user,
+            error: req.flash('error').toString(),
+            success: req.flash('success').toString()
+        });
+    });
 }

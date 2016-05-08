@@ -1,0 +1,33 @@
+<%- include header.ejs %>
+
+<div id="main-content">
+    <% posts.forEach(function(post, index) { %>
+    <div class="post">
+        <div class="post-bar"></div>
+        <div class="post-container">
+            <div class="post-title">
+                <h2><%= post.title %><span class="glyphicon glyphicon-heart"></span></h2>
+            </div>
+            <div class="post-content"><%- post.post %></div>
+            <div class="post-footer">
+                <% if (post.room === 'Study') { %> 
+                <a href="/<%= post.room %>" class="post-room btn btn-primary"><%= post.room %></a>
+                <% } else if (post.room === 'Kitchen'){ %>
+                <a href="/<%= post.room %>" class="post-room btn btn-fresh"><%= post.room %></a>
+                <% } else if (post.room === 'Living') { %>
+                <a href="/<%= post.room %>" class="post-room btn btn-info"><%= post.room %></a>
+                <% } else if (post.room === 'Yard') { %>
+                <a href="/<%= post.room %>" class="post-room btn btn-success"><%= post.room %></a>
+                <% } %>
+            </div>
+        </div>
+        <div class="post-time">
+            <div class="post-time-day"><%= post.time.day %></div>
+            <div class="post-time-month"><%= post.time.month %></div>
+            <div class="post-time-year"><%= post.time.year %></div>
+        </div>
+    </div>
+    <% }) %>   
+</div>
+
+<%- include footer.ejs %>

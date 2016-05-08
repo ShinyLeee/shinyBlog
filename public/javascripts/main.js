@@ -6,7 +6,7 @@ $(function(){
     
     //获取当前文章数量
     $(window).on('load', function() {
-        var user = $('#user').find('.info').children('a').text();
+        var user = $('#user').find('.info').children('span').text();
         var name = 'name='+user;
         $.ajax({
             type: 'GET',
@@ -34,17 +34,69 @@ $(function(){
     //预览文章修改
     $('#edit-preview, #post-preview').on('click', function() {
         var article = $('#edit').val();
+        var loadFlash = '<div class="sk-cube-grid" style="display: none;">'+
+                        '<div class="sk-cube sk-cube1"></div>'+
+                        '<div class="sk-cube sk-cube2"></div>'+
+                        '<div class="sk-cube sk-cube3"></div>'+
+                        '<div class="sk-cube sk-cube4"></div>'+
+                        '<div class="sk-cube sk-cube5"></div>'+
+                        '<div class="sk-cube sk-cube6"></div>'+
+                        '<div class="sk-cube sk-cube7"></div>'+
+                        '<div class="sk-cube sk-cube8"></div>'+
+                        '<div class="sk-cube sk-cube9"></div>'+'</div>';
+        $('#preview').html(loadFlash);
+        if(article) { $('.sk-cube-grid').show(); }
+        var begin = new Date();
         $.ajax({
             type: 'GET',
             url: '/preview',
             data: {article: article},
-            success: function(article) {
-                $('#preview').html(article);
+            success: function(data) {
+                var end = new Date();
+                if (end - begin > 1500) {
+                    $('#preview').html(data);
+                }
+                else {
+                    var timespan = 1500 - (end - begin);
+                    setTimeout(function() {
+                        $('#preview').html(data);
+                    }, timespan);
+                }
             },
             error: function(XML, textStatus, err) {
                 console.log(XML + textStatus + err);
             }
         })
+    })
+    
+    //收藏模块
+    $('#post-star').one('click', function() {
+        var $this = $(this);
+        var postID = document.location.pathname.slice(3);
+        $.ajax({
+            type: 'GET',
+            url: '/makeStar',
+            data: {postID: postID},
+            success: function(data) {
+                $this.children('i').attr('class', 'glyphicon glyphicon-star');
+                alert(data);
+            }
+        })
+    })
+    
+    //点赞模块
+    $('#thumb-like').one('click', function() {
+        var $this = $(this);
+        
+        $this.attr('class', 'glyphicon glyphicon-heart');
+       /* $.ajax({
+            type: 'POST',
+            url: '/giveLike',
+            data: '',
+            success: function(data) {
+                
+            }
+        }) */
     })
     
     //上传图片模块
@@ -136,112 +188,11 @@ $(function(){
             }
         })
     })
+    
+    $('#post-remove').on('click', function(e) {
+        var r = confirm("Are you sure to remove this post?");
+        if(r == true) {}
+        else {e.preventDefault()};
+    })
 })
 
-//Learn Collapse Plugin From Bootstrap
-!function($) {
-    var collapse = function(target, option) {
-        this.$target = $(target);
-        this.$trigger = $('[data-toggle = "collapses"][data-target = "#'+target.id+'"]');
-        this.option = option;
-        
-        if (this.option.toggle == "collapses") this.toggle();  
-    }
-    
-    collapse.prototype.toggle = function() {
-        this[this.$target.hasClass('in') ? 'hide' : 'show'](); 
-    }
-    
-    collapse.prototype.show = function() {
-        if (this.$target.hasClass('in')) return;
-        
-        var startEvent = $.Event('show.sl.collapse');
-        this.$target.trigger(startEvent);
-        
-        this.$trigger
-        .removeClass('collapsed')
-        .attr('aria-expanded', true);
-        
-        this.$target
-        .removeClass('collapse')    //去除collapse则显示，但将高度设为0依旧不显示
-        .addClass('collapsing')
-        .attr('aria-expanded', true)
-        .height(0);
-        
-        this.transitioning = 1;
-        
-        var complete = function() {
-            this.$target
-            .removeClass('collapsing')
-            .addClass('collapse in') //css-->.collapse --> db: hide; .collpase . in --> db: block;
-            .height('');
-            
-            this.transitioning = 0;
-            this.$target.trigger('shown.sl.collapse');
-        }
-        
-        if (!$.support.transition) return complete.call(this);
-        
-        this.$target
-        .height(this.$target[0].scrollHeight)
-        .one('bsTransitionEnd', $.proxy(complete, this));
-    }
-    
-    collapse.prototype.hide = function() {
-        if (!this.$target.hasClass('in')) return;
-        
-        var startEvent = $.Event('hide.sl.collapse');
-        this.$target.trigger(startEvent);
-        
-        this.$trigger
-        .addClass('collapsed')
-        .attr('aria-expanded', false);
-        
-        this.$target.height(this.$target[0].scrollHeight);
-        
-        this.$target
-        .removeClass('collapse in')   
-        .addClass('collapsing')
-        .attr('aria-expanded', false);
-        
-        this.transitioning = 1;
-        
-        var complete = function() {
-            this.$target
-            .removeClass('collapsing')
-            .addClass('collapse')
-            .height(0);
-            
-            this.transitioning = 0;
-            this.$target.trigger('hiden.sl.collapse');
-        }
-        
-        if (!$.support.transition) return complete.call(this);
-        this.$target
-        .height(0)
-        .one('bsTransitionEnd', $.proxy(complete, this))
-        .emulateTransitionEnd(350);
-    }
-    
-    //构造器
-    function Plugin(option) {
-        return this.each(function(index) {
-            var $target = $(this);
-            var data = $target.data('sl.collapse');
-            
-            if (!data) $target.data('sl.collapse', new collapse(this, option));
-            if (typeof option == 'string') data[option]();
-        })
-    }
-    
-    $(document).on('click.sl.collapse.data-api', '[data-toggle = "collapses"]', function(e) {
-        var $trigger = $(this);
-        var $target = $($trigger.data('target'));
-        var data = $target.data('sl.collapse');
-        var option = data ? 'toggle' : $trigger.data();
-        
-        Plugin.call($target, option);
-        
-    })
-    
-}(jQuery)

@@ -9,7 +9,7 @@ var postSchema = new mongoose.Schema({
     post: String,
     room: String,
     time: Object,
-    comment: Array
+    star: Boolean
 }, {
     collection: 'posts' 
 });
@@ -56,7 +56,7 @@ Post.prototype.save = function(callback) {
         post: this.post,
         room: this.room,
         time: time,
-        comment: []
+        star: false
     };
     
     //由Model生成的Entity实体
@@ -69,13 +69,6 @@ Post.prototype.save = function(callback) {
         callback(null, post);
     });
 };
-
-Post.preview = function(article, callback) {
-    if(article) {
-        article = markdown.toHTML(article);
-        callback(null, article);
-    }
-}
 
 //获取单篇文章
 Post.getOne = function(_id, callback) {
@@ -90,26 +83,39 @@ Post.getOne = function(_id, callback) {
     });
 };
 
-//获取用户所有文章或根据时间排序获取所有文章
-Post.getDefault = function(name, room, callback) {
-    var query = {};
-    if (name) {
-        query.name = name;
-    }
-    if (room) {
-        query.room = room;
-    }
-    postModel.find(query).sort({
-        time: -1
+Post.getAll = function(name, callback) {
+    postModel.find({
+        name: name
     }).exec(function(err, docs) {
         if(err) {
             return callback(err.toString());
         }
-        docs.forEach(function(doc, index) {
-            doc.post = markdown.toHTML(doc.post);
-        })
         callback(null, docs);
-    });      
+    })
+}
+
+//根据时间排序获取5篇文章
+Post.getDefault = function(page, room, callback) {
+    var query = {};
+    if (room) {
+        query.room = room;
+    }
+    postModel.count(query, function(err, total) {
+        postModel.find(query)
+        .skip((page - 1) * 5)
+        .limit(5)
+        .sort({
+            time: -1
+        }).exec(function(err, docs) {
+            if(err) {
+                return callback(err.toString());
+            }
+            docs.forEach(function(doc, index) {
+                doc.post = markdown.toHTML(doc.post);
+            })
+            callback(null, docs, total);
+        });      
+    })
 };
 
 //存档
@@ -176,3 +182,38 @@ Post.search = function(title, callback) {
         callback(null, doc);
     });
 };
+
+
+Post.preview = function(article, callback) {
+    if(article) {
+        article = markdown.toHTML(article);
+        callback(null, article);
+    }
+}
+
+//收藏文章
+Post.makeStar = function(postID, callback) {
+    postModel.update({
+        _id: new ObjectID(postID)
+    }, {
+        $set: {star: true}
+    }, function(err, doc) {
+        if(err) {
+            return callback(err.toString());
+        }
+        callback(null);
+    })
+}
+
+//获取所有收藏文章
+Post.getStarred = function(callback) {
+    postModel.find({ star: true }, function(err, docs) {
+        if(err) {
+            return callback(err.toString());
+        }
+        docs.forEach(function(doc, index) {
+            doc.post = markdown.toHTML(doc.post);
+        });
+        callback(null, docs);
+    });
+}
