@@ -14,11 +14,14 @@ $(function(){
             data: name,
             success: function(passageLength) {
                 $('.user-passage').children('p').text(passageLength);
-            },
-            error: function(XML, textStatus, err) {
-                console.log(XML + textStatus + err);
             }
         })
+        if($('.pager').children('.previous').hasClass('disabled') && $('.pager').children('.next').hasClass('disabled')) {
+            $('#pager').hide();
+        }
+        else {
+            $('#pager').show();
+        }
     })
     
     $(window).on('scroll', function() {
@@ -70,7 +73,7 @@ $(function(){
     })
     
     //收藏模块
-    $('#post-star').one('click', function() {
+    $('.toggle-star').on('click', function() {
         var $this = $(this);
         var postID = document.location.pathname.slice(3);
         $.ajax({
@@ -78,7 +81,10 @@ $(function(){
             url: '/makeStar',
             data: {postID: postID},
             success: function(data) {
-                $this.children('i').attr('class', 'glyphicon glyphicon-star');
+                $this
+                .hide()
+                .siblings()
+                .show();
                 alert(data);
             }
         })
@@ -89,14 +95,19 @@ $(function(){
         var $this = $(this);
         
         $this.attr('class', 'glyphicon glyphicon-heart');
-       /* $.ajax({
+        $.ajax({
             type: 'POST',
             url: '/giveLike',
             data: '',
             success: function(data) {
-                
+                if (data == "Liked") {
+                    alert('You have Already Liked, Thanks for your support');
+                }
+                else {
+                    $('#thumb-like').siblings('p').text(data);
+                }
             }
-        }) */
+        }) 
     })
     
     //上传图片模块
@@ -108,11 +119,11 @@ $(function(){
         $('#submit-img').trigger('click'); 
     })
     
-    $('#frameFile').on('load', function() {
+    /*$('#frameFile').on('load', function() {
         var path = $(this).contents().find('body').text().slice(6);
         var markdownPath = '\n![markdown]('+ path +')';
         $('#edit').append(markdownPath);
-    })
+    })*/
     
     //启用模态框
     $('.active-login').click(function () {

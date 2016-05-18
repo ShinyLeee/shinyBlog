@@ -115,6 +115,7 @@ input:-moz-placeholder {
   font-size: 16px;
   border: 1px solid #dcdcdc;
   border-radius: 6px;
+  z-index: 99;
 }
 
 .flash-condition {
@@ -363,7 +364,7 @@ input:-moz-placeholder {
   font-size: 24px;
   color: #222;
 }
-.post-container > .post-title a:first-child {
+.post-container > .post-title .toggle-star {
   margin-left: 10px;
 }
 .post-container > .post-title a {
@@ -484,6 +485,10 @@ input:-moz-placeholder {
 .edit-content > textarea:focus, .post-content > textarea:focus {
   box-shadow: none;
   border-color: #ccc;
+}
+
+.edit-button, .post-button {
+  margin-bottom: 20px;
 }
 
 #preview {

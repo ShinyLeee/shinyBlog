@@ -34,12 +34,13 @@
                 <div id="preview" class="tab-pane"></div>
             </div>
         </div>
-        <div>
+        <div class="edit-button">
             <button type="submit" class="btn btn-success">Submit</button>
             <button type="reset" class="btn btn-default">Reset</button>
         </div>
     </form>
-    <form id="upload" action="/upload" enctype="multipart/form-data" method="POST" target="frameFile" style="display: none">
+    <form id="upload" action="http://uppsc.imgapi.com/" enctype="multipart/form-data" method="POST" style="display: none">
+        <input type="hidden" name="Token" value="c483c34b16d6077e511267296af11f588c37ee48:TUZiUWcyR1ZIWS1FUENyRlBpYlNyWVJoQjVFPQ==:eyJkZWFkbGluZSI6MTQ2Mjk0NDE4OSwiYWN0aW9uIjoiZ2V0IiwidWlkIjoiNTY0MzM0IiwiYWlkIjoiMTIxOTE4MyIsImZyb20iOiJ3ZWIifQ==">
         <input type="file" id="choose-img" multiple name="img">
         <input type="submit" id="submit-img">
     </form>

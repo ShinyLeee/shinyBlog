@@ -5,9 +5,7 @@
     <div class="post">
         <div class="post-bar"></div>
         <div class="post-container">
-            <div class="post-title">
-                <h2><%= post.title %><span class="glyphicon glyphicon-heart"></span></h2>
-            </div>
+            <a href="/p/<%= post._id %>" class="post-title"><h2><%= post.title %></h2></a>
             <div class="post-content"><%- post.post %></div>
             <div class="post-footer">
                 <% if (post.room === 'Study') { %> 

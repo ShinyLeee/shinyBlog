@@ -28,6 +28,7 @@ router.post('/upload', upload.single('img'), function(req, res) {
 /* GET home page. */
 router.get('/', function(req, res, next) {
     var page = parseInt(req.query.p) || 1;
+    
     Post.getDefault(page, null, function(err, posts, total) {
         if(err) {
             posts = [];
@@ -37,6 +38,7 @@ router.get('/', function(req, res, next) {
             user: req.session.user,
             posts: posts,
             pages: page,
+            counts: req.session.likesCount,
             isFirstPage: (page - 1) == 0,
             isLastPage: (page - 1) * 5 + posts.length == total,
             error: req.flash('error').toString(),
@@ -116,6 +118,7 @@ router.get('/post', isLogin);
 router.get('/post', function(req, res) {
     res.render('post', {
         page: "Post",
+        counts: req.session.likesCount,
         user: req.session.user,
         error: req.flash('error').toString(),
         success: req.flash('success').toString()
@@ -131,15 +134,21 @@ router.post('/post', function(req, res) {
         post: req.body.post,
         room: req.body.room
     }
-    var newPost = new Post(post);
-    newPost.save(function(err) {
-        if(err) {
-            req.flash('error', err);
+    if (post.name && post.title && post.post && post.room) {
+        var newPost = new Post(post);
+        newPost.save(function(err) {
+            if(err) {
+                req.flash('error', err);
+                return res.redirect('/');
+            }
+            req.flash('success', '文章发表成功');
             return res.redirect('/');
-        }
-        req.flash('success', '文章发表成功');
-        return res.redirect('/');
-    });
+        });
+    }
+    else {
+        req.flash('error', '请检查文章输入是否完整');
+        return res.redirect('back');
+    }
 });
 /*-------------编辑、删除文章模块---------------*/
 router.get('/edit/:_id', isLogin);
@@ -149,6 +158,7 @@ router.get('/edit/:_id', function(req, res) {
         res.render('edit', {
             page: 'Edit',
             post: post,
+            counts: req.session.likesCount,
             user: req.session.user,
             error: req.flash('error').toString(),
             success: req.flash('success').toString() 
@@ -183,6 +193,8 @@ router.get('/delete/:_id', function(req, res) {
 });
 /*-------------获取单篇/用户全部文章模块---------------*/
 router.get('/p/:_id', function(req, res) {
+    var _id = req.params._id;
+    
     Post.getOne(req.params._id, function(err, post) {
         if(err) {
             post = null;
@@ -192,6 +204,8 @@ router.get('/p/:_id', function(req, res) {
             page: 'Article',
             user: req.session.user,
             star: req.session.star,
+            counts: req.session.likesCount,
+            isStar: req.session[_id],
             post: post,
             error: req.flash('error').toString(),
             success: req.flash('success').toString()
@@ -210,6 +224,8 @@ router.get('/yard', getRoom);
 
 /*-------------Search文章模块---------------*/
 router.get('/search', function(req, res) {
+    var _id = req.params._id;
+    
     Post.search(req.query.keyword, function(err, post) {
         if(err) {
             req.flash('error', err);
@@ -222,6 +238,8 @@ router.get('/search', function(req, res) {
         res.render('article', {
             page: "Search",
             post: post,
+            counts: req.session.likesCount,
+            isStar: req.session[_id],
             user: req.session.user,
             error: req.flash('error').toString(),
             success: req.flash('success').toString()
@@ -239,6 +257,7 @@ router.get('/archive', function(req, res) {
         res.render('archive', {
             page: "Archive",
             posts: posts,
+            counts: req.session.likesCount,
             user: req.session.user,
             error: req.flash('error').toString(),
             success: req.flash('success').toString()
@@ -256,6 +275,7 @@ router.get('/star', function(req, res) {
             page: "Starred",
             posts: posts,
             star: req.session.star,
+            counts: req.session.likesCount,
             user: req.session.user,
             error: req.flash('error').toString(),
             success: req.flash('success').toString()
@@ -268,6 +288,7 @@ router.get('/about', function(req, res) {
     res.render('about', {
         page: "About Me",
         user: req.session.user,
+        counts: req.session.likesCount,
         error: req.flash('error').toString(),
         success: req.flash('success').toString()
     });
@@ -325,20 +346,49 @@ router.get('/preview', function(req, res) {
 router.get('/makeStar', function(req, res) {
     var postID = req.query.postID;
     
-    Post.makeStar(postID, function(err) {
+    Post.makeStar(postID, function(err, status) {
         if(err) {
             res.send('Database Connect Error, Please try again later');
             return;
         }
-        res.send('收藏成功');
+        if (status) {
+            //[]里才能获取postID变量
+            req.session[postID] = "starred";
+            res.send('收藏成功');
+        }
+        else {
+            req.session[postID] = null;
+            res.send('取消收藏成功');
+        }
+        console.log(req.session);
     })
 })
 
+var count = 0;
+
 //Ajax点赞网站
-router.get('/giveLike', function(req, res) {
+router.post('/giveLike', function(req, res) {
     var ip = req.ip;
-   // Admin.saveLike()
-})
+    Admin.checkLiked(ip, function(err, admin) {
+        if(err) {
+            res.send('Database Connect Error, Please try again later');
+            return;
+        }
+        Admin.saveLike(ip, function(err, admin) {
+            if (err) {
+                res.send('Database Connect Error, Please try again later');
+                return;
+            }
+            if (admin) {
+                res.send('Liked');
+                return;
+            }
+            count = count + 1;
+            req.session.likesCount = count;
+            res.json(req.session.likesCount);
+        });
+    });
+});
 
 
 function isLogin (req, res, next) {
@@ -363,6 +413,7 @@ function getRoom (req, res) {
             page: path,
             posts: posts,
             pages: page,
+            counts: req.session.likesCount,
             isFirstPage: (page - 1) == 0,
             isLastPage: (page - 1) * 5 + posts.length == total,
             user: req.session.user,

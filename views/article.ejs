@@ -8,7 +8,13 @@
                 <h2>
                     <%= post.title %>
                     <% if(user) { %>
-                    <a id="post-star" href="#" data-toggle="tooltip" title="收藏"><i class="glyphicon glyphicon-star-empty"></i></a>
+                    <% if(isStar) { %>
+                    <a class="toggle-star" href="#" data-toggle="tooltip" data-original-title="取消收藏"><i class="glyphicon glyphicon-star"></i></a>
+                    <a class="toggle-star" href="#" data-toggle="tooltip" data-original-title="收藏" style="display: none;"><i class="glyphicon glyphicon-star-empty"></i></a>
+                    <% } else { %>
+                    <a class="toggle-star" href="#" data-toggle="tooltip" data-original-title="取消收藏" style="display: none;"><i class="glyphicon glyphicon-star"></i></a>
+                    <a class="toggle-star" href="#" data-toggle="tooltip" data-original-title="收藏"><i class="glyphicon glyphicon-star-empty"></i></a>
+                    <% } %>
                     <a href="/edit/<%= post._id %>/" data-toggle="tooltip" title="编辑"><i class="glyphicon glyphicon-pencil"></i></a>
                     <a id="post-remove" href="/delete/<%= post._id %>" data-toggle="tooltip" title="删除"><i class="glyphicon glyphicon-trash"></i></a>
                     <% } %>

@@ -2,8 +2,10 @@
 
 <div id="main-content">
     <% posts.forEach(function(post, index) { %>
+    <% var minute = post.time.minute %>
+    <% if (minute.length == 14) { var partI = minute.substring(0,7)+0; var partII = minute.substring(7); minute = partI.concat(partII); }%>
     <div class="archive-container">
-        <span class="archive-time"><time><%= post.time.minute %></time></span>
+        <span class="archive-time"><time><%= minute %></time></span>
         <span class="archive-title"><a href="/p/<%= post._id %>"><%= post.title %></a></span>
     </div>
     <% }) %>

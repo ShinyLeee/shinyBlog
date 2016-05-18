@@ -61,6 +61,7 @@
         font-size: 16px;
         border: 1px solid $borderColor;
         border-radius: 6px;
+        z-index: 99;
     }
 }
 .flash-condition {right: 10%;}
@@ -282,7 +283,7 @@
     & > .post-title {
         font-size: 24px;
         color: #222;
-        & a:first-child {margin-left: 10px;}
+        & .toggle-star {margin-left: 10px;}
         & a {
             padding: 3px;
             font-size: 12px;
@@ -399,6 +400,9 @@
             border-color: #ccc;
         }
     }
+}
+.edit-button, .post-button {
+    margin-bottom: 20px;
 }
 #preview {
     padding: 6px 12px;

@@ -173,13 +173,18 @@ Post.remove = function(_id, callback) {
 //查找文章
 Post.search = function(title, callback) {
     postModel.findOne({
-        title: title
+        title: new RegExp(title, 'i')
     }, function(err, doc) {
         if(err) {
             return callback(err.toString());
         } 
-        doc.post = markdown.toHTML(doc.post);
-        callback(null, doc);
+        if(doc) {
+            doc.post = markdown.toHTML(doc.post);
+            callback(null, doc);  
+        }
+        else {
+            callback(null, null);
+        }
     });
 };
 
@@ -194,16 +199,32 @@ Post.preview = function(article, callback) {
 //收藏文章
 Post.makeStar = function(postID, callback) {
     postModel.update({
-        _id: new ObjectID(postID)
+        _id: new ObjectID(postID),
+        star: false
     }, {
         $set: {star: true}
-    }, function(err, doc) {
+    }, function(err, status) {
         if(err) {
             return callback(err.toString());
         }
-        callback(null);
-    })
-}
+        if(!status.n) {
+            postModel.update({
+                _id: new ObjectID(postID),
+                star: true
+            }, {
+                $set: {star: false}
+            }, function(err, status) {
+                if(err) {
+                    return callback(err.toString());
+                }
+                callback(null, false);
+            })
+        }
+        else if (status.n) {
+            callback(null, true);
+        }
+    });
+};
 
 //获取所有收藏文章
 Post.getStarred = function(callback) {
@@ -216,4 +237,4 @@ Post.getStarred = function(callback) {
         });
         callback(null, docs);
     });
-}
+};

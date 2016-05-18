@@ -53,6 +53,7 @@
                               <li><a href="http://www.color-hex.com/" target="_blank">Color-Palette</a></li>
                               <li><a href="https://jsfiddle.net/" target="_blank">Jsfiddle</a></li>
                               <li><a href="http://jamus.co.uk/demos/rwd-demonstrations/" target="_blank">Responsive Design</a></li>
+                              <li><a href="http://www.appinn.com/markdown/" target="_blank">Markdown Grammar</a></li>
                               <li role="separator" class="divider"></li>
                               <li><a href="http://www.bootcdn.cn/" target="_blank">BootCDN</a></li>
                               <li><a href="http://nodeframework.com/" target="_blank">NodeFrameWork</a></li>
@@ -93,7 +94,7 @@
           <% } %>
           <div id="user-avatar">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                  <img src="/images/avatar.jpg" alt="avatar">
+                  <img src="http://i3.buimg.com/3257a594abf33274.jpg" alt="avatar">
               </a>
               <ul class="dropdown-menu" aria-labelledby="dLabel">
                   <li><a href="/post">Post</a></li>
@@ -106,7 +107,7 @@
       
       <div id="user">
           <div class="avatar">
-              <img src="/images/avatar.jpg" alt="avatar">
+              <img src="http://i3.buimg.com/3257a594abf33274.jpg" alt="avatar">
           </div>
           <div class="info">
               <span>ShinyLee</span>
@@ -121,8 +122,13 @@
                       <span class="glyphicon glyphicon-map-marker"></span>
                   </li>
                   <li class="user-like">
+                      <% if (counts) { %>
+                      <p><%= counts %></p>
+                      <span id="thumb-like" class="glyphicon glyphicon-heart"></span>
+                      <% } else { %>
                       <p>0</p>
                       <span id="thumb-like" class="glyphicon glyphicon-heart-empty"></span>
+                      <% } %>
                   </li>
               </ul>
           </div>
