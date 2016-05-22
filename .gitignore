@@ -1,3 +1,6 @@
 node_modules
 *.jpg
 public/sass
+public/dist
+设计稿
+.vscode

@@ -12,7 +12,7 @@ var minifyCSS = require('gulp-minify-css');
 
 //自动添加浏览器支持前缀并压缩CSS
 gulp.task('fnCss', function () {
-    gulp.src('public/stylesheets/*.css')
+    gulp.src('public/dist/stylesheets/*.css')
         .pipe(autoprefixer({
             browsers: ['last 2 versions'],
             cascade: false,
@@ -24,11 +24,11 @@ gulp.task('fnCss', function () {
 
 //压缩js文件
 gulp.task('uglify', function () {
-    gulp.src('public/javascripts/*.js')
+    gulp.src('public/dist/javascripts/*.js')
         .pipe(uglify())
         .pipe(gulp.dest('public/js'));
 });
 
 gulp.task('watch', function () {
-    gulp.watch('public/stylesheets/*.css', ['fnCss']);
+    gulp.watch('public/dist/stylesheets/*.css', ['fnCss']);
 });

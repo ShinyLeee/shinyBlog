@@ -48,6 +48,7 @@
 .now-page {
     position: relative;
     height: 50px;
+    font-family: "Microsoft Yahei","Hiragino Sans GB",Helvetica,"Helvetica Neue","微软雅黑",Tahoma,Arial,sans-serif;
 }
 .flash-condition {
     position: absolute;
@@ -57,7 +58,6 @@
         padding: 10px;
         background-color: #fff;
         color: #000;
-        font-family: 'Microsoft Yahei';
         font-size: 16px;
         border: 1px solid $borderColor;
         border-radius: 6px;
@@ -68,23 +68,21 @@
 .locate-page {
     position: absolute;;
     left: 40%;
+    width: 60%;
     & > p {
         font-size: 28px;
         margin-bottom: 5px;
     }
     & > .line {
-        width: 500px;
-        margin: auto;
+        width: 60%;
     }
 }
 @media (max-width: 768px) {
     .locate-page {
         left: 5%;
+        width: 80%;
         & > p {
             font-size: 24px;
-        }
-        & > .line {
-            width: 200px;
         }
     }
 }
@@ -115,6 +113,7 @@
     background-color: #fff; 
     border: 1px solid $borderColor;
     border-radius: 10px;
+    font-family: "Microsoft Yahei","Hiragino Sans GB",Helvetica,"Helvetica Neue","微软雅黑",Tahoma,Arial,sans-serif;
     overflow: hidden;
     transition: all 1s ease-in-out; 
     & > span {
@@ -152,7 +151,7 @@
         margin: auto;
         width: 160px;
     }
-    & .user-like { cursor: pointer; }
+    & #thumb-like { cursor: pointer; }
 }
 .user-icon {
     margin: 20px 0;
@@ -160,10 +159,13 @@
     & > li {
         display: inline-block;
         width: 50px;
-        margin-right: 10p;
     }
     & span {
         font-size: 20px;
+    }
+    & .user-info {
+        height: 30px;
+        margin-bottom: 10px;
     }
 }
 #user-nav {
@@ -258,7 +260,7 @@
     height: auto;
     margin-bottom: 50px;
     padding-bottom: 20px;
-    font-family: 'Microsoft Yahei';
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.075);
     overflow: hidden;
 }
@@ -316,6 +318,10 @@
             color: #fff;
         }
     }//inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 5px rgba(0, 0, 0, 0.075)
+}
+a.post-title:hover {
+    text-decoration: none;
+    color: #ff6961;
 }
 .post-time {
     position: absolute;

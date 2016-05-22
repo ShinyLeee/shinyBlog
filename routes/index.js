@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var crypto = require('crypto');
 var multer = require('multer');
+var needle = require('needle');
+var getmac = require('getmac');
 var User = require('../models/user');
 var Post = require('../models/post');
 var Admin = require('../models/admin');
@@ -34,10 +36,10 @@ router.get('/', function(req, res, next) {
             posts = [];
         }
         res.render('index', {
-            page: 'Home',
+            channel: '首页',
             user: req.session.user,
             posts: posts,
-            pages: page,
+            page: page,
             counts: req.session.likesCount,
             isFirstPage: (page - 1) == 0,
             isLastPage: (page - 1) * 5 + posts.length == total,
@@ -117,7 +119,7 @@ router.post('/register', function(req, res) {
 router.get('/post', isLogin);
 router.get('/post', function(req, res) {
     res.render('post', {
-        page: "Post",
+        channel: "发表文章",
         counts: req.session.likesCount,
         user: req.session.user,
         error: req.flash('error').toString(),
@@ -156,7 +158,7 @@ router.get('/edit/:_id', function(req, res) {
     var _id = req.params._id;
     Post.edit(_id, function(err, post) {
         res.render('edit', {
-            page: 'Edit',
+            channel: '编辑',
             post: post,
             counts: req.session.likesCount,
             user: req.session.user,
@@ -201,7 +203,7 @@ router.get('/p/:_id', function(req, res) {
             req.flash('error', '获取文章失败');
         }
         res.render('article', {
-            page: 'Article',
+            channel: '文章',
             user: req.session.user,
             star: req.session.star,
             counts: req.session.likesCount,
@@ -236,7 +238,7 @@ router.get('/search', function(req, res) {
             return res.redirect('/');
         }
         res.render('article', {
-            page: "Search",
+            channel: "搜索结果",
             post: post,
             counts: req.session.likesCount,
             isStar: req.session[_id],
@@ -255,7 +257,7 @@ router.get('/archive', function(req, res) {
             return res.redirect('/');
         }
         res.render('archive', {
-            page: "Archive",
+            channel: "存档",
             posts: posts,
             counts: req.session.likesCount,
             user: req.session.user,
@@ -272,7 +274,7 @@ router.get('/star', function(req, res) {
             return res.redirect('/');
         }
         res.render('star', {
-            page: "Starred",
+            channel: "已收藏",
             posts: posts,
             star: req.session.star,
             counts: req.session.likesCount,
@@ -286,7 +288,7 @@ router.get('/star', function(req, res) {
 /*-------------About文章模块---------------*/
 router.get('/about', function(req, res) {
     res.render('about', {
-        page: "About Me",
+        channel: "关于",
         user: req.session.user,
         counts: req.session.likesCount,
         error: req.flash('error').toString(),
@@ -309,25 +311,23 @@ router.get('/hasAccount', function(req, res) {
             return res.redirect('/');
         }
         res.send(!user);
-    })
-})
+    });
+});
 
 //AJAX检测当前文章数量
 router.get('/getPostLength', function(req, res) {
     var name = req.query.name;
     
-    Post.getAll(name, function(err, posts) {
-        var length = String(posts.length);
+    Post.getLength(name, function(err, length) {
         if(err) {
-            console.log(err);
             return;
         }
         //res.send(paramter) 
         //--> parameter Only can be [Object] [Array] [String] or [Buffer Object]
         //Not [Number]
-        res.send(length);
-    })
-})
+        res.json(length);
+    });
+});
 
 //AJAX获取实时预览文章
 router.get('/preview', function(req, res) {
@@ -338,9 +338,9 @@ router.get('/preview', function(req, res) {
             console.log(err);
             return;
         }
-        res.send(article);
-    })
-})
+        res.json(article);
+    });
+});
 
 //Ajax添加收藏文章
 router.get('/makeStar', function(req, res) {
@@ -360,34 +360,55 @@ router.get('/makeStar', function(req, res) {
             req.session[postID] = null;
             res.send('取消收藏成功');
         }
-        console.log(req.session);
-    })
-})
-
-var count = 0;
+        
+    });
+});
 
 //Ajax点赞网站
-router.post('/giveLike', function(req, res) {
-    var ip = req.ip;
-    Admin.checkLiked(ip, function(err, admin) {
-        if(err) {
-            res.send('Database Connect Error, Please try again later');
-            return;
-        }
-        Admin.saveLike(ip, function(err, admin) {
-            if (err) {
+router.get('/giveLike', function(req, res) {
+    
+    getmac.getMac(function(err, mac) {
+        if (err) throw err;
+        
+        var macAddress = mac;
+        var date = new Date();
+        var time = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
+       
+        Admin.checkLiked(macAddress, function(err, status) {
+            if(err) {
                 res.send('Database Connect Error, Please try again later');
-                return;
             }
-            if (admin) {
-                res.send('Liked');
-                return;
+            if (!status) {
+                needle.get('http://pv.sohu.com/cityjson?ie=utf-8', function(err, response) {
+                    var ipDetail = JSON.parse(response.body.slice(18, -1));
+                    var cip = ipDetail.cip;
+                    var cname= ipDetail.cname;
+                    var cid = ipDetail.cid; 
+                    
+                    var admin = {
+                        cip: cip,
+                        cname: cname,
+                        cid: cid,
+                        macAddress: macAddress,
+                        time: time
+                    }
+                    
+                    var newAdmin = new Admin(admin);
+                
+                    newAdmin.saveLike(function(err, count) {
+                        if (err) {
+                            res.send('Database Connect Error, Please try again later');
+                        }
+                        req.session.likesCount = count;
+                        res.json(req.session.likesCount);
+                    });
+                });
             }
-            count = count + 1;
-            req.session.likesCount = count;
-            res.json(req.session.likesCount);
-        });
-    });
+            else {
+                res.json('Liked');
+            }
+        });            
+    });      
 });
 
 
@@ -402,6 +423,13 @@ function isLogin (req, res, next) {
 function getRoom (req, res) {
     //首字母大写
     var path = req.path.slice(1).replace(/(\w)/,function(v){return v.toUpperCase()});
+    
+    switch (path) {
+        case 'Study': channel = '书房'; break;
+        case 'Kitchen': channel = '厨房'; break;
+        case 'Living': channel = '生活'; break;
+        case 'Yard': channel = '杂谈'; break;
+    }
     var page = req.query.p || 1;
     
     Post.getDefault(page, path, function(err, posts, total) {
@@ -410,9 +438,9 @@ function getRoom (req, res) {
             return res.redirect('/');
         }
         res.render('index', {
-            page: path,
+            channel: channel,
             posts: posts,
-            pages: page,
+            page: page,
             counts: req.session.likesCount,
             isFirstPage: (page - 1) == 0,
             isLastPage: (page - 1) * 5 + posts.length == total,

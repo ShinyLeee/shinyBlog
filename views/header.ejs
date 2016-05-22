@@ -8,10 +8,11 @@
     <meta name="author" content="ShinyLee">
     <meta name="keyword" content="ShinyLee blog">   
     <title>Shiny's Blog </title>
-    <link rel="icon" href="/images/icon.ico">
+    <link href="/images/icon.ico" rel="icon">
     <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/stylesheets/bootstrap-theme.css" rel="stylesheet">
-    <link href="/stylesheets/main.css" rel="stylesheet">
+    <link href="/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="/css/monokai-sublime.css" rel="stylesheet" >
+    <link href="/css/main.css" rel="stylesheet">
   </head>
   <body>
       <%- include modal.ejs %>
@@ -43,17 +44,18 @@
                               <% } %>
                           </ul>
                       </li>
-                      <li><a href="/">Home</a></li>
+                      <li><a href="/">首页</a></li>
                       <li>
-                          <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#">Utility
+                          <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#">工具
                               <span class="caret"></span>
                               <span class="sr-only">Toggle Dropdown</span>
                           </a>
                           <ul class="dropdown-menu">
                               <li><a href="http://www.color-hex.com/" target="_blank">Color-Palette</a></li>
                               <li><a href="https://jsfiddle.net/" target="_blank">Jsfiddle</a></li>
-                              <li><a href="http://jamus.co.uk/demos/rwd-demonstrations/" target="_blank">Responsive Design</a></li>
-                              <li><a href="http://www.appinn.com/markdown/" target="_blank">Markdown Grammar</a></li>
+                              <li><a href="http://jamus.co.uk/demos/rwd-demonstrations/" target="_blank">响应式设计测试</a></li>
+                              <li><a href="https://markdown-it.github.io/" target="_blank">Markdown语法</a></li>
+                              <li><a href="http://ip.taobao.com/index.php" target="_blank">淘宝IP地址库</a></li>
                               <li role="separator" class="divider"></li>
                               <li><a href="http://www.bootcdn.cn/" target="_blank">BootCDN</a></li>
                               <li><a href="http://nodeframework.com/" target="_blank">NodeFrameWork</a></li>
@@ -61,21 +63,21 @@
                           </ul>
                       </li>
                       <li>
-                          <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#">Room
+                          <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#">分类
                               <span class="caret"></span>
                               <span class="sr-only">Toggle Dropdown</span>
                           </a>
                           <ul class="dropdown-menu">
-                              <li><a href="/study">Study</a></li>
-                              <li><a href="/kitchen">Kitchen</a></li>
-                              <li><a href="/living">Living</a></li>
-                              <li><a href="/yard">Yard</a></li>
+                              <li><a href="/study">书房</a></li>
+                              <li><a href="/kitchen">美食</a></li>
+                              <li><a href="/living">生活</a></li>
+                              <li><a href="/yard">杂谈</a></li>
                           </ul>
                       </li>
-                      <li><a href="https://github.com/ShinyLeee" target="_blank">Contact</a></li>
+                      <li><a href="https://github.com/ShinyLeee" target="_blank">Github</a></li>
                   </ul>
                   <form action="/search" method="GET" class="search" >
-                      <input type="text" name="keyword" placeholder="Search">
+                      <input type="text" name="keyword" placeholder="搜索">
                   </form>
               </div>
           </div>
@@ -83,7 +85,7 @@
          
       <div class="now-page">
           <div class="locate-page">
-             <p><%= page %></p>
+             <p><%= channel %></p>
              <span class="line"></span>
           </div>
           <% if (success) { %>
@@ -97,10 +99,10 @@
                   <img src="http://i2.buimg.com/cb1ac6e096295a76.jpg" alt="avatar">
               </a>
               <ul class="dropdown-menu" aria-labelledby="dLabel">
-                  <li><a href="/post">Post</a></li>
-                  <li><a href="/archive">Archive</a></li>
-                  <li><a href="/star">Starred</a></li>
-                  <li><a href="/about">About</a></li>
+                  <li><a href="/post">发表</a></li>
+                  <li><a href="/archive">存档</a></li>
+                  <li><a href="/star">收藏</a></li>
+                  <li><a href="/about">关于</a></li>
               </ul>
           </div>
       </div>
@@ -113,20 +115,20 @@
               <span>ShinyLee</span>
               <span class="line"></span>
               <ul class="user-icon">
-                  <li class="user-passage">
-                      <p>0</p>
+                  <li>
+                      <div id="post-length" class="user-info">0</div>
                       <span class="glyphicon glyphicon-file"></span>
                   </li>
-                  <li class="user-location">
-                      <p>宁波</p>
+                  <li>
+                      <div class="user-info">宁波</div>
                       <span class="glyphicon glyphicon-map-marker"></span>
                   </li>
-                  <li class="user-like">
+                  <li>
                       <% if (counts) { %>
-                      <p><%= counts %></p>
+                      <div class="user-info"><%= counts %></div>
                       <span id="thumb-like" class="glyphicon glyphicon-heart"></span>
                       <% } else { %>
-                      <p>0</p>
+                      <div class="user-info">0</div>
                       <span id="thumb-like" class="glyphicon glyphicon-heart-empty"></span>
                       <% } %>
                   </li>
@@ -134,11 +136,11 @@
           </div>
           <ul id="user-nav">
               <% if (user) { %>
-              <li><a href="/post">Post</a></li>
+              <li><a href="/post">发表文章</a></li>
               <% } %>
-              <li><a href="/archive">Archive</a></li>
-              <li><a href="/star">Starred</a></li>
-              <li><a href="/about">About</a></li>
+              <li><a href="/archive">存档</a></li>
+              <li><a href="/star">收藏</a></li>
+              <li><a href="/about">关于</a></li>
           </ul>
       </div>
       

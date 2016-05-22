@@ -1,6 +1,19 @@
 var mongoose = require('./db.js');
-var markdown = require('markdown').markdown;
+var hljs = require('highlight.js');
 var ObjectID = require('mongodb').ObjectID;
+var markdown = require('markdown-it')({
+    highlight: function (str, lang) {
+        if (lang && hljs.getLanguage(lang)) {
+            try {
+                return '<pre class="hljs"><code>' +
+                    hljs.highlight(lang, str, true).value + '</code></pre>';
+            } 
+            catch (ex) { throw ex; }
+        }
+        return '<pre class="hljs"><code>' + md.utils.escapeHtml(str) + '</code></pre>';
+    }
+});
+
 
 //以文件形式存储的数据库模型骨架
 var postSchema = new mongoose.Schema({
@@ -66,7 +79,7 @@ Post.prototype.save = function(callback) {
         if(err) {
             return callback(err);
         }
-        callback(null, post);
+        callback(null);
     });
 };
 
@@ -78,7 +91,7 @@ Post.getOne = function(_id, callback) {
         if(err) {
             return callback(err.toString());
         }
-        doc.post = markdown.toHTML(doc.post);
+        doc.post = markdown.render(doc.post);
         callback(null, doc);
     });
 };
@@ -111,11 +124,22 @@ Post.getDefault = function(page, room, callback) {
                 return callback(err.toString());
             }
             docs.forEach(function(doc, index) {
-                doc.post = markdown.toHTML(doc.post);
+                doc.post = markdown.render(doc.post);
             })
             callback(null, docs, total);
         });      
     })
+};
+
+//获取文章数量
+Post.getLength = function(name, callback) {
+    
+    postModel.count(name, function(err, total) {
+        if(err) {
+            return callback(err.toString());
+        }
+        callback(null, total);
+    });
 };
 
 //存档
@@ -179,7 +203,7 @@ Post.search = function(title, callback) {
             return callback(err.toString());
         } 
         if(doc) {
-            doc.post = markdown.toHTML(doc.post);
+            doc.post = markdown.render(doc.post);
             callback(null, doc);  
         }
         else {
@@ -191,10 +215,10 @@ Post.search = function(title, callback) {
 
 Post.preview = function(article, callback) {
     if(article) {
-        article = markdown.toHTML(article);
+        article = markdown.render(article);
         callback(null, article);
     }
-}
+};
 
 //收藏文章
 Post.makeStar = function(postID, callback) {
@@ -233,7 +257,7 @@ Post.getStarred = function(callback) {
             return callback(err.toString());
         }
         docs.forEach(function(doc, index) {
-            doc.post = markdown.toHTML(doc.post);
+            doc.post = markdown.render(doc.post);
         });
         callback(null, docs);
     });

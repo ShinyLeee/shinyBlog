@@ -9,13 +9,13 @@
             <div class="post-content"><%- post.post %></div>
             <div class="post-footer">
                 <% if (post.room === 'Study') { %> 
-                <a href="/<%= post.room %>" class="post-room btn btn-primary"><%= post.room %></a>
+                <a href="/<%= post.room %>" class="post-room btn btn-primary">学习</a>
                 <% } else if (post.room === 'Kitchen'){ %>
-                <a href="/<%= post.room %>" class="post-room btn btn-fresh"><%= post.room %></a>
+                <a href="/<%= post.room %>" class="post-room btn btn-fresh">美食</a>
                 <% } else if (post.room === 'Living') { %>
-                <a href="/<%= post.room %>" class="post-room btn btn-info"><%= post.room %></a>
+                <a href="/<%= post.room %>" class="post-room btn btn-info">生活</a>
                 <% } else if (post.room === 'Yard') { %>
-                <a href="/<%= post.room %>" class="post-room btn btn-success"><%= post.room %></a>
+                <a href="/<%= post.room %>" class="post-room btn btn-success">杂谈</a>
                 <% } %>
             </div>
         </div>

@@ -1,7 +1,11 @@
 var mongoose = require('./db.js');
 
 var adminSchema = new mongoose.Schema({
-    stats: Object
+    cip: String,
+    cname: String,
+    cid: Number,
+    macAddress: String,
+    time: String
 }, {
     collection: 'admin'
 });
@@ -12,31 +16,41 @@ module.exports = Admin;
 
 
 function Admin(admin) {
-    this.stats = admin.stats
+    this.cip = admin.cip,
+    this.cname = admin.cname,
+    this.cid = admin.cid,
+    this.macAddress = admin.macAddress,
+    this.time = admin.time
 };
 
-Admin.saveLike = function (ip, callback) {
-    var date = new Date();
-    var stats = {
-        minute: date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()),
-        ip: ip
-    }
+Admin.prototype.saveLike = function (callback) {
+       
     var admin = {
-        stats: stats
+        cip: this.cip,
+        cname: this.cname,
+        cid: this.cid,
+        macAddress: this.macAddress,
+        time: this.time
     }
+    
     var newAdmin = new adminModel(admin);
     
-    newAdmin.save(function(err, doc) {
+    newAdmin.save(function(err) {
         if (err) {
             return callback(err.toString());
         }
-        callback(null, doc);
+        adminModel.count(function(err, total) {
+            if(err) {
+                return callback(err.toString());
+            }
+            callback(null, total);
+        });
     });
 };
 
-Admin.checkLiked = function (ip, callback) {
+Admin.checkLiked = function (macAddress, callback) {
     adminModel.findOne({
-        ip: ip
+        macAddress: macAddress
     }, function(err, doc) {
         if (err) {
             return callback(err.toString());

@@ -9,13 +9,13 @@
             <div class="post-content"><%- post.post %></div>
             <div class="post-footer">
                 <% if (post.room === 'Study') { %> 
-                <a href="/<%= post.room %>" class="post-room btn btn-primary"><%= post.room %></a>
+                <a href="/<%= post.room %>" class="post-room btn btn-primary">书房</a>
                 <% } else if (post.room === 'Kitchen'){ %>
-                <a href="/<%= post.room %>" class="post-room btn btn-fresh"><%= post.room %></a>
+                <a href="/<%= post.room %>" class="post-room btn btn-fresh">美食</a>
                 <% } else if (post.room === 'Living') { %>
-                <a href="/<%= post.room %>" class="post-room btn btn-info"><%= post.room %></a>
+                <a href="/<%= post.room %>" class="post-room btn btn-info">生活</a>
                 <% } else if (post.room === 'Yard') { %>
-                <a href="/<%= post.room %>" class="post-room btn btn-success"><%= post.room %></a>
+                <a href="/<%= post.room %>" class="post-room btn btn-success">杂谈</a>
                 <% } %>
             </div>
         </div>
@@ -33,13 +33,13 @@
             <li class="next disabled"><a>下一页 <span aria-hidden="true">&rarr;</span></a></li>
             <% } else if (isFirstPage) { %>
             <li class="previous disabled"><a><span aria-hidden="true">&larr;</span> 上一页</a></li>
-            <li class="next"><a href="/?p=<%= pages + 1 %>">下一页 <span aria-hidden="true">&rarr;</span></a></li>
+            <li class="next"><a href="/?p=<%= page + 1 %>">下一页 <span aria-hidden="true">&rarr;</span></a></li>
             <% } else if (isLastPage) { %>
-            <li class="previous"><a href="/?p=<%= pages - 1 %>"><span aria-hidden="true">&larr;</span> 上一页</a></li>
+            <li class="previous"><a href="/?p=<%= page - 1 %>"><span aria-hidden="true">&larr;</span> 上一页</a></li>
             <li class="next disabled"><a>下一页 <span aria-hidden="true">&rarr;</span></a></li>
             <% } else { %>
-            <li class="previous"><a href="/?p=<%= pages - 1 %>"><span aria-hidden="true">&larr;</span> 上一页</a></li>
-            <li class="next"><a href="/?p=<%= pages + 1 %>">下一页 <span aria-hidden="true">&rarr;</span></a></li>
+            <li class="previous"><a href="/?p=<%= page - 1 %>"><span aria-hidden="true">&larr;</span> 上一页</a></li>
+            <li class="next"><a href="/?p=<%= page + 1 %>">下一页 <span aria-hidden="true">&rarr;</span></a></li>
             <% } %>
             
         </ul>
